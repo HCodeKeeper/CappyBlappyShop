@@ -7,8 +7,14 @@ class User(models.Model):
     email = models.EmailField(max_length=100)
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+
+
+
 class Product(models.Model):
     name = models.CharField(max_length=70)
+    category = models.ForeignKey(Category)
     rating = models.SmallIntegerField(max_length=1, default=0)
     description = models.CharField(max_length=5000)
     manufacturer = models.CharField(max_length=100)
