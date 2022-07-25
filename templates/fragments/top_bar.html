@@ -1,15 +1,9 @@
-<div class="top_bar">
-    {% if offer is not None %}
-        <a href="{{ offer.link }}">{{ offer.title }}</a>
-    {% endif %}
-    <div class="center_links">
-        <a href="/">Home</a>
-        {% if catalogue is not None %}
-            <p> | </p>
-            <button id="filters">Filters</button>
-        {% endif %}
-    </div>
+<div class="nav_bar">
+    <a id="offer" href=""></a>
+    <a href="/">Home</a>
     <button id="cart"><img src="../images/cart.png"/></button>
     <button id="account"><img src="../images/account.png"/></button>
     <button id="tel"><img src="../images/tel.png"/></button>
 </div>
+
+<script src="../js/categories.js"></script>
