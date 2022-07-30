@@ -7,13 +7,13 @@
 <body>
     <header>
         {% include 'fragments/top_bar.html' %}
-        <img src="images/shop_theme" id="shop_theme">
+        <img src="../static/images/shop_theme.jpg" id="shop_theme">
     </header>
     {% include 'fragments/search.html' %}
     <div class="product_list">
         {% for product in products %}
             <div class="product">
-                <img alt="https://depositphotos.com/vector-images/no-image-available.html" src="{% product.image_src %}">
+                <img alt="https://depositphotos.com/vector-images/no-image-available.html" src="{{ product.image_src }}">
                 <a href="{{ product.id }}">{{ product.name }}</a>
                 <span>
                     {% if product.rating == 0 %}
@@ -25,7 +25,7 @@
                     {% endif %}
                 </span>
                 <span>
-                    <p6 class="price_tag">{{ product.price }}</p6>
+                    <p6 class="price_tag">{{ product.price }}$</p6>
                 </span>
             </div>
         {% endfor %}
