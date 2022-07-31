@@ -1,7 +1,7 @@
 from django.http import HttpRequest, HttpResponseBadRequest, JsonResponse
 
 
-def process_ajax(request, json, method='GET'):
+def process_ajax(request, json, method='GET') -> JsonResponse:
     if not is_ajax(request):
         return HttpResponseBadRequest('Invalid request')
     else:
