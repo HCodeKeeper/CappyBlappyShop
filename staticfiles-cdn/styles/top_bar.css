@@ -2,6 +2,6 @@
     background-color: #1b1b1b;
 }
 
-.nav_bar > a{
+.nav_bar > a, button{
     color: #ffffff;
 }
