@@ -1,7 +1,7 @@
-.class_bar > a{
-    color: white;
+.nav_bar{
+    background-color: #1b1b1b;
 }
 
-.class_bar > a:hover{
-    background: none;
+.nav_bar > a{
+    color: #ffffff;
 }

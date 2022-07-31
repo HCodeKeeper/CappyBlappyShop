@@ -1,11 +1,11 @@
 const api_path = "/random_deal";
 
 function insert_random_deal(deal){
-    console.log(JSON.stringify(deal, null, 2))
     let offer = document.getElementById("offer");
     let dealName = Object.keys(deal)[0];
+    console.log(dealName);
     offer.setAttribute("href", deal[dealName]);
-    let text = document.createTextNode(deal);
+    let text = document.createTextNode(dealName);
     offer.appendChild(text);
 }
 
