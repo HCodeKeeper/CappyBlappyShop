@@ -1,6 +1,7 @@
-const api_path = "/random_deal"
+const api_path = "/random_deal";
 
 function insert_random_deal(deal){
+    console.log(JSON.stringify(deal, null, 2))
     let offer = document.getElementById("offer");
     let dealName = Object.keys(deal)[0];
     offer.setAttribute("href", deal[dealName]);
@@ -21,6 +22,7 @@ function getAndRenderRandomDeal() {
     }
   };
   xhttp.open("GET", api_path, true);
+  xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
   xhttp.send();
 }
 

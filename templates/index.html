@@ -14,7 +14,7 @@
         {% for product in products %}
             <div class="product">
                 <img alt="https://depositphotos.com/vector-images/no-image-available.html" src="{{ product.image_src }}">
-                <a href="{{ product.id }}">{{ product.name }}</a>
+                <a href="/product/{{ product.id }}">{{ product.name }}</a>
                 <span>
                     {% if product.rating == 0 %}
                         <p6 class="rating_label">Not rated</p6>

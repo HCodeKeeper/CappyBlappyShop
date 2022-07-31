@@ -1,4 +1,4 @@
-const api_path = "/categories"
+const api_path = "/categories";
 
 function insert_categories(categories){
     let menu = document.getElementsByName("dropdown-content");
@@ -24,6 +24,7 @@ function getAndRenderCategories() {
     }
   };
   xhttp.open("GET", api_path, true);
+  xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
   xhttp.send();
 }
 
