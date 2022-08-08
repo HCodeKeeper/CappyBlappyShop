@@ -13,24 +13,37 @@
     </header>
     {% include 'fragments/search.html' %}
     <div class="product_list">
-        {% for product in products %}
-            <div class="product">
-                <img alt="https://depositphotos.com/vector-images/no-image-available.html" src="{{ product.image_src }}">
-                <a href="/product/{{ product.id }}">{{ product.name }}</a>
-                <span>
-                    {% if product.rating == 0 %}
-                        <p6 class="rating_label">Not rated</p6>
-                    {% endif %}
+        <table>
+            {% for product in products %}
+                {% if forloop.first %}
+                    <tr>
+                {% endif %}
+                <th>
+                    <div class="product">
+                        <img alt="https://depositphotos.com/vector-images/no-image-available.html" src="{{ product.image_src }}">
+                        <a href="/product/{{ product.id }}">{{ product.name }}</a>
+                        <span>
+                            {% if product.rating == 0 %}
+                                <p6 class="rating_label">Not rated</p6>
+                            {% endif %}
 
-                    {% if product.rating > 0 %}
-                        <p6 class="rating_label">Rating: {{ product.rating }}/5</p6>
+                            {% if product.rating > 0 %}
+                                <p6 class="rating_label">Rating: {{ product.rating }}/5</p6>
+                            {% endif %}
+                        </span>
+                        <span>
+                            <p6 class="price_tag">{{ product.price }}$</p6>
+                        </span>
+                    </div>
+                </th>
+                {% if forloop.counter|divisibleby:"4" %}
+                    </tr>
+                    {% if not forloop.last %}
+                        <tr>
                     {% endif %}
-                </span>
-                <span>
-                    <p6 class="price_tag">{{ product.price }}$</p6>
-                </span>
-            </div>
+                {% endif %}
         {% endfor %}
+        </table>
     </div>
 {% include 'fragments/footer.html' %}
 </body>
