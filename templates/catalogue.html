@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <header>
+        {% include 'fragments/top_bar.html' %}
+    </header>
+    {% include 'fragments/search.html' %}
+    <div class="product_list">
+        <table>
+            {% for product in products %}
+                {% if forloop.first %}
+                    <tr>
+                {% endif %}
+                <th>
+                    <div class="product">
+                        <img alt="https://depositphotos.com/vector-images/no-image-available.html" src="{% static product.image_src %}">
+                        <a href="/product/{{ product.id }}">{{ product.name }}</a>
+                        <span>
+                            {% if product.rating == 0 %}
+                                <p6 class="rating_label">Not rated</p6>
+                            {% endif %}
+
+                            {% if product.rating > 0 %}
+                                <p6 class="rating_label">Rating: {{ product.rating }}/5</p6>
+                            {% endif %}
+                        </span>
+                        <span>
+                            <p6 class="price_tag">{{ product.price }}$</p6>
+                        </span>
+                    </div>
+                </th>
+                {% if forloop.counter|divisibleby:"6" %}
+                    </tr>
+                    {% if not forloop.last %}
+                        <tr>
+                    {% endif %}
+                {% endif %}
+        {% endfor %}
+        </table>
+    </div>
+    {% include 'fragments/footer.html' %}
+</body>
+</html>

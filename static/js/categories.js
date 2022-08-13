@@ -1,10 +1,12 @@
 const api_path = "/categories";
 
 function insert_categories(categories){
+    console.log("A");
     let menu = document.getElementsByName("dropdown-content");
     Object.entries(categories).forEach(
         (currentValue) => {
-            let tag = document.createElement("a", {"href" : currentValue[1]});
+            let tag = document.createElement("a");
+            tag.setAttribute("href", currentValue[1]);
             tag.appendChild(document.createTextNode(currentValue[0]));
             document.getElementById("categories").appendChild(tag);
         }
@@ -12,6 +14,7 @@ function insert_categories(categories){
 }
 
 function getAndRenderCategories() {
+    console.log("E");
   let xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
