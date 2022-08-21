@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title> CBShop:{{ query }}</title>
 </head>
 <body>
     <header>
@@ -42,6 +42,21 @@
                 {% endif %}
         {% endfor %}
         </table>
+    </div>
+    <div class="page_nav">
+        {% if products.has_previous %}
+            <form id="prev_page" action="/find">
+                <input type="hidden" name="product" value="{{ query }}">
+                <input type="submit" name="page" value="{{ products.previous_page_number }}">
+            </form>
+        {% endif %}
+        <button id="current_page" disabled>{{ products.number }}</button>
+        {% if products.has_next %}
+            <form id="next_page" action="/find">
+                <input type="hidden" name="product" value="{{ query }}">
+                <input type="submit" name="page" value="{{ products.next_page_number }}">
+            </form>
+        {% endif %}
     </div>
     {% include 'fragments/footer.html' %}
 </body>

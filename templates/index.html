@@ -20,7 +20,7 @@
                 {% endif %}
                 <th>
                     <div class="product">
-                        <img alt="https://depositphotos.com/vector-images/no-image-available.html" src="{{ product.image_src }}">
+                        <img alt="https://depositphotos.com/vector-images/no-image-available.html" src="{% static product.image_src %}">
                         <a href="/product/{{ product.id }}">{{ product.name }}</a>
                         <span>
                             {% if product.rating == 0 %}

@@ -13,8 +13,14 @@ def index(request):
 
 def catalogue(request):
     name = request.GET.get('product', '')
-    context = {
-        "products": product_service.get_products(name)
-    }
-
-    return render(request, "catalogue.html", context)
+    page_num = int(request.GET.get('page', '1'))
+    try:
+        products = product_service.get_products_page(name, page_num)
+        context = {
+            "products": products,
+            "page_num": page_num,
+            "query": name
+        }
+        return render(request, "catalogue.html", context)
+    except IndexError:
+        return HttpResponseBadRequest('This page doesn\'t exist')
