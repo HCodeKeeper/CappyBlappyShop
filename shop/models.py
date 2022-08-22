@@ -20,7 +20,8 @@ class Product(models.Model):
     description = models.CharField(max_length=5000)
     manufacturer = models.CharField(max_length=100)
     contact_info = models.CharField(max_length=100)
-    price = models.DecimalField(max_digits=6, decimal_places=2) #ALWAYS USD
+    # ALWAYS USD
+    price = models.DecimalField(max_digits=6, decimal_places=2)
     quantity = models.IntegerField()
 
 
@@ -51,7 +52,7 @@ class Order(models.Model):
     creation_date = models.DateTimeField()
 
 
-#Product instance(s) ordered by a user
+# Product instance(s) ordered by a user
 class Item(models.Model):
     product = models.ForeignKey(Product, on_delete=models.DO_NOTHING)
     addon = models.ForeignKey(Addon, on_delete=models.DO_NOTHING)

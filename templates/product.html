@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ product.name }}</title>
+</head>
+<body>
+    <header>
+        {% include 'fragments/top_bar.html' %}
+    </header>
+    {% include 'fragments/search.html' %}
+    <span class="preview_section">
+        <img src="{{ product.image_src }}">
+    </span>
+    <span class="main_section">
+        <div class="buttons">
+            <button id="description">Description</button>
+            <button id="contacts">Contacts</button>
+            <button id="reviews">Reviews</button>
+        </div>
+        <div class="body_section">
+            <p>{{ product.description }}</p>
+        </div>
+    </span>
+</body>
+</html>

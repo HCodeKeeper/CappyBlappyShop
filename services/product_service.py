@@ -1,6 +1,43 @@
-from shop.models import Product
+from shop.models import Product, Review, Deal, Addon
+from django.db.models import Model
 from django.http import JsonResponse
 from django.core.paginator import Paginator
+
+
+class Context:
+    def __init__(self, product, reviews, addons, deal):
+        self.product = product
+        self.reviews = reviews
+        self.addons = addons
+        self.deal = deal
+
+    def get_product(self) -> Product:
+        return self.product
+
+    def get_reviews(self) -> Review:
+        return self.reviews
+
+    def get_addons(self) -> Addon:
+        return self.addons
+
+    def get_deal(self) -> Deal:
+        return self.deal
+
+
+# context = everything related for a product page
+def get_product_context(product_id) -> Context:
+    try:
+        product = Product.objects.get(id=product_id)
+        addons = Addon.objects.filter(product=product.id)
+        reviews = Review.objects.filter(product=product.id)
+        try:
+            deal = Deal.objects.get(product=product.id)
+        except Model.DoesNotExist:
+            deal = Deal()
+            deal.percents = 100
+        return Context(product, reviews, addons, deal)
+    except Model.DoesNotExist as e:
+        raise e
 
 
 def get_random_products(quantity):
