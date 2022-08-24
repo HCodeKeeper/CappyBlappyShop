@@ -1,7 +1,6 @@
 const api_path = "/categories";
 
 function insert_categories(categories){
-    console.log("A");
     let menu = document.getElementsByName("dropdown-content");
     Object.entries(categories).forEach(
         (currentValue) => {
@@ -14,7 +13,6 @@ function insert_categories(categories){
 }
 
 function getAndRenderCategories() {
-    console.log("E");
   let xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {

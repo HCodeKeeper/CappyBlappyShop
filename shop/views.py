@@ -1,4 +1,4 @@
-from django.db.models import Model
+from .models import Product
 from django.shortcuts import render
 from services import product_service
 from shop.api import *
@@ -36,5 +36,5 @@ def product(request, product_id):
             "reviews": product_context.get_reviews()
         }
         return render(request, "product.html", context)
-    except Model.DoesNotExist:
+    except Product.DoesNotExist:
         return HttpResponseBadRequest('This product doesn\'t exist')

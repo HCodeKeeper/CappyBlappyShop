@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,12 +11,12 @@
     </header>
     {% include 'fragments/search.html' %}
     <span class="preview_section">
-        <img src="{{ product.image_src }}">
+        <img src="{% static product.image_src %}">
     </span>
     <span class="main_section">
         <div class="buttons">
-            <button id="description">Description</button>
-            <button id="contacts">Contacts</button>
+            <button id="description" onclick="render_description('{{ product.description }}');">Description</button>
+            <button id="contacts" onclick="render_contacts('{{ product.manufacturer }}', '{{ product.contact_info }}');">Contacts</button>
             <button id="reviews">Reviews</button>
         </div>
         <div class="body_section">
@@ -23,4 +24,5 @@
         </div>
     </span>
 </body>
+<script src="{% static 'js/product.js' %}"></script>
 </html>

@@ -4,7 +4,8 @@ function insert_categories(categories){
     let menu = document.getElementsByName("dropdown-content");
     Object.entries(categories).forEach(
         (currentValue) => {
-            let tag = document.createElement("a", {"href" : currentValue[1]});
+            let tag = document.createElement("a");
+            tag.setAttribute("href", currentValue[1]);
             tag.appendChild(document.createTextNode(currentValue[0]));
             document.getElementById("categories").appendChild(tag);
         }

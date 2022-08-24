@@ -27,7 +27,7 @@ class Product(models.Model):
 
 class Deal(models.Model):
     title = models.CharField(max_length=50)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.OneToOneField(Product, on_delete=models.CASCADE)
     percents = models.FloatField(max_length=3)
 
 

@@ -32,11 +32,11 @@ def get_product_context(product_id) -> Context:
         reviews = Review.objects.filter(product=product.id)
         try:
             deal = Deal.objects.get(product=product.id)
-        except Model.DoesNotExist:
+        except Deal.DoesNotExist:
             deal = Deal()
             deal.percents = 100
         return Context(product, reviews, addons, deal)
-    except Model.DoesNotExist as e:
+    except Product.DoesNotExist as e:
         raise e
 
 
