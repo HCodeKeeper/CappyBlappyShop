@@ -5,17 +5,13 @@ from django.core.paginator import Paginator
 
 
 class Context:
-    def __init__(self, product, reviews, addons, deal):
+    def __init__(self, product, addons, deal):
         self.product = product
-        self.reviews = reviews
         self.addons = addons
         self.deal = deal
 
     def get_product(self) -> Product:
         return self.product
-
-    def get_reviews(self) -> Review:
-        return self.reviews
 
     def get_addons(self) -> Addon:
         return self.addons
@@ -29,13 +25,12 @@ def get_product_context(product_id) -> Context:
     try:
         product = Product.objects.get(id=product_id)
         addons = Addon.objects.filter(product=product.id)
-        reviews = Review.objects.filter(product=product.id)
         try:
             deal = Deal.objects.get(product=product.id)
         except Deal.DoesNotExist:
             deal = Deal()
             deal.percents = 100
-        return Context(product, reviews, addons, deal)
+        return Context(product, addons, deal)
     except Product.DoesNotExist as e:
         raise e
 

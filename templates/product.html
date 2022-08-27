@@ -4,25 +4,48 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ product.name }}</title>
+    <link rel="stylesheet" href="{% static 'styles/product.css' %}">
 </head>
 <body>
     <header>
         {% include 'fragments/top_bar.html' %}
     </header>
     {% include 'fragments/search.html' %}
-    <span class="preview_section">
-        <img src="{% static product.image_src %}">
-    </span>
-    <span class="main_section">
-        <div class="buttons">
-            <button id="description" onclick="render_description('{{ product.description }}');">Description</button>
-            <button id="contacts" onclick="render_contacts('{{ product.manufacturer }}', '{{ product.contact_info }}');">Contacts</button>
-            <button id="reviews">Reviews</button>
+    <div class="product_section">
+        <div class="preview_section">
+            <img id="product_img" src="{% static product.image_src %}">
+            <h2 id="product_name">{{ product.name }}</h2>
+            <p><strong>{{ product.price }}$</strong></p>
+            <form method="post" id="purchase_form" action="/cart_post_method">
+                {% csrf_token %}
+                <div class="all_block">
+                    <p id="count_label">Count</p>
+                    <input id="counter" type="text" pattern="^\d{1,3}$" required="required"
+                           name="counter" value="1" oninvalid="this.setCustomValidity('Has to be filled with positive number < 100')"
+                           oninput="this.setCustomValidity('')"/>
+
+                    <label for="addons">Addons:</label>
+                    <select id="addons" form="purchase_form">
+                        <option value="-1" selected>None</option>
+                        {% for addon in addons %}
+                            <option value="{{ addon.id }}">{{ addon.name }} <strong>+{{ addon.price }}$</strong></option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <input type="submit" value="Buy">
+            </form>
         </div>
-        <div class="body_section">
-            <p>{{ product.description }}</p>
+        <div class="main_section">
+            <div class="buttons">
+                <button id="description" onclick="render_description('{{ product.description }}');">Description</button>
+                <button id="contacts" onclick="render_contacts('{{ product.manufacturer }}', '{{ product.contact_info }}');">Contacts</button>
+                <button id="reviews">Reviews</button>
+            </div>
+            <div class="body_section">
+                <p>{{ product.description }}</p>
+            </div>
         </div>
-    </span>
+    </div>
 </body>
 <script src="{% static 'js/product.js' %}"></script>
 </html>

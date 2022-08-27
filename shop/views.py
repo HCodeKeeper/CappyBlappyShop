@@ -32,8 +32,7 @@ def product(request, product_id):
         context = {
             "product": product_context.get_product(),
             "addons": product_context.get_addons(),
-            "deal": product_context.get_deal(),
-            "reviews": product_context.get_reviews()
+            "deal": product_context.get_deal()
         }
         return render(request, "product.html", context)
     except Product.DoesNotExist:
