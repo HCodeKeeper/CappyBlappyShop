@@ -16,8 +16,8 @@
             <img id="product_img" src="{% static product.image_src %}">
             <h2 id="product_name">{{ product.name }}</h2>
             <p><strong>{{ product.price }}$</strong></p>
-            <form method="post" id="purchase_form" action="/cart_post_method">
-                {% csrf_token %}
+            <div id="purchase_form">
+            {% csrf_token %}
                 <div class="all_block">
                     <p id="count_label">Count</p>
                     <input id="counter" type="text" pattern="^\d{1,3}$" required="required"
@@ -25,15 +25,20 @@
                            oninput="this.setCustomValidity('')"/>
 
                     <label for="addons">Addons:</label>
-                    <select id="addons" form="purchase_form">
+                    <select id="addons">
                         <option value="-1" selected>None</option>
                         {% for addon in addons %}
                             <option value="{{ addon.id }}">{{ addon.name }} <strong>+{{ addon.price }}$</strong></option>
                         {% endfor %}
                     </select>
                 </div>
-                <input type="submit" value="Buy">
-            </form>
+                {% if product.id not in request.session.cart %}
+                <button onclick="add_to_cart('{{ product.id }}');" class="purchase_button">Buy</button>
+                {% endif %}
+                {% if product.id  in request.session.cart %}
+                <button onclick="add_to_cart('{{ product.id }}');" class="not_active_button">In cart</button>
+                {% endif %}
+            </div>
         </div>
         <div class="main_section">
             <div class="buttons">

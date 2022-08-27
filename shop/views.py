@@ -1,6 +1,6 @@
 from .models import Product
 from django.shortcuts import render
-from services import product_service
+from services import product_service, cart_service
 from shop.api import *
 
 
@@ -27,6 +27,7 @@ def catalogue(request):
 
 
 def product(request, product_id):
+    cart_service.assert_cart_exists(request)
     try:
         product_context = product_service.get_product_context(product_id)
         context = {

@@ -90,6 +90,16 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        "LOCATION": "redis://127.0.0.1:6379/1",
+    }
+}
+
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+
 
 # Fake PyMySQL's version and install as MySQLdb
 # https://adamj.eu/tech/2020/02/04/how-to-use-pymysql-with-django/
