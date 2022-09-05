@@ -10,25 +10,28 @@
    <div class="CartContainer">
    	   <div class="Header">
    	   	<h3 class="Heading">Shopping Cart</h3>
+           <h5 class="Home-Action"><a href="/">Home</a> </h5>
    	   	<h5 class="Action">Remove all</h5>
    	   </div>
        {% for _, product in items.items %}
            <div class="Cart-Items pad">
+           <input class="product_id" value="{{ product.self.id }}" disabled hidden/>
    	   	  <div class="image-box">
    	   	  	<img src="{% static product.self.image_src %}" style='height:120px' />
    	   	  </div>
    	   	  <div class="about">
    	   	  	<h1 class="title">{{ product.self.name }}</h1>
+              <div class="Addon">{{ product.addon.name }}</div>
    	   	  </div>
    	   	  <div class="counter">
-   	   	  	<div class="btn">+</div>
-   	   	  	<div class="count">{{ product.count }}</div>
-   	   	  	<div class="btn">-</div>
+   	   	  	<div class="count">
+                {{ product.count }}
+            </div>
    	   	  </div>
    	   	  <div class="prices">
    	   	  	<div class="amount">{{ item.self.price }}</div>
    	   	  	<div class="save"><u>Save for later</u></div>
-   	   	  	<div class="remove"><u>Remove</u></div>
+   	   	  	<div class="remove" onclick="remove_from_cart('{{ product.self.id }}')"><u>Remove</u></div>
    	   	  </div>
    	   </div>
        {% endfor %}
@@ -47,4 +50,5 @@
    	 <button class="button">Checkout</button></div>
    </div>
 </body>
+<script src="{% static 'js/product.js' %}"></script>
 </html>

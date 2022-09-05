@@ -1,6 +1,8 @@
 api_path_to_add = "/cart/item/add/";
 api_path_to_remove = "/cart/item/remove/";
 
+const MIN = 1;
+const MAX = 100;
 
 function getCSRF() {
     let name = "csrftoken";
@@ -53,10 +55,25 @@ function render_contacts(manufacturer, contact_info){
     section.appendChild(contacts_info);
 }
 
+function boundaries(number, min, max){
+    return (number >= min && number <= max);
+}
+
+function validate_number(number, min, max){
+    let is_valid = false;
+    if (!isNaN(number)){
+        is_valid = boundaries(number, min, max);
+    }
+    return is_valid;
+}
+
 
 function add_to_cart(product_id){
     let count = document.getElementById("counter").value;
     let addon_id = document.getElementById("addons").value;
+    if (!validate_number(count, MIN, MAX)){
+        return;
+    }
 
     let xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
@@ -78,5 +95,21 @@ function add_to_cart(product_id){
       }}
   ));
   }
+}
 
+function remove_from_cart(product_id){
+    let xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        window.location.replace("");
+    }
+  }
+  xhttp.open("POST", api_path_to_remove, true);
+
+  xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+  xhttp.setRequestHeader("X-CSRFToken", getCSRF());
+  xhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  xhttp.send(JSON.stringify(
+      {payload:{"product_id" : product_id}})
+  );
 }

@@ -8,6 +8,7 @@ class Cart:
         if not self.__assert_cart_exists():
             self.__insert_cart_in_session()
         self.session_cart = self.request.session["cart"]
+        print(self.session_cart)
 
     def add(self, product_id, count: int, addon_id="-1"):
         self.session_cart[product_id] = {"self": product_id, "count": count, "addon_id": addon_id}
@@ -18,6 +19,11 @@ class Cart:
             self.session_cart[product_id]["count"] = count
         if addon_id is not None:
             self.session_cart[product_id]["addon_id"]
+
+    def update_multiple_count(self, id_counts: [str, int]):
+        for entry in id_counts:
+            self.session_cart[entry[0]]["count"] = entry[1]
+        self.request.session.modified = True
 
     def get_data(self) -> dict:
         items = {}
@@ -41,6 +47,7 @@ class Cart:
 
     def remove_item(self, product_id):
         self.session_cart.pop(product_id)
+        self.request.session.modified = True
 
     def remove_addon(self, product_id):
         self.session_cart[product_id]["addon_id"] = "-1"
