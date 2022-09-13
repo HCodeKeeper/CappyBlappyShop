@@ -52,6 +52,9 @@ class Cart:
     def remove_addon(self, product_id):
         self.session_cart[product_id]["addon_id"] = "-1"
 
+    def clear(self):
+        self.__insert_cart_in_session()
+
     def __assert_cart_exists(self):
         cart = self.request.session.get("cart", None)
         if cart is None:

@@ -33,6 +33,14 @@ def remove_from_cart(request):
     return HttpResponseNotAllowed()
 
 
+def clear_cart(request):
+    if request.method == 'POST':
+        cart = Cart(request)
+        cart.clear()
+        return HttpResponse("200")
+    return HttpResponseNotAllowed()
+
+
 def update_multiple_from_cart(request):
     if request.method == 'POST':
         cart = Cart(request)

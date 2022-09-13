@@ -11,7 +11,7 @@
    	   <div class="Header">
    	   	<h3 class="Heading">Shopping Cart</h3>
            <h5 class="Home-Action"><a href="/">Home</a> </h5>
-   	   	<h5 class="Action">Remove all</h5>
+   	   	<h5 class="Action" onclick="remove_all_from_cart();">Remove all</h5>
    	   </div>
        {% for _, product in items.items %}
            <div class="Cart-Items pad">
@@ -50,5 +50,5 @@
    	 <button class="button">Checkout</button></div>
    </div>
 </body>
-<script src="{% static 'js/product.js' %}"></script>
+<script src="{% static 'js/cart.js' %}"></script>
 </html>
