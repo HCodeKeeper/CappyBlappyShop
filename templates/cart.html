@@ -47,7 +47,11 @@
    	 	</div>
    	 	<div class="total-amount">{{ sub_total_price }}$</div>
    	 </div>
-   	 <button class="button">Checkout</button></div>
+         <form action='{% url "create_checkout_session" %}' method="POST">
+             {% csrf_token %}
+             <button type="submit" class="button">Checkout</button>
+         </form>
+     </div>
    </div>
 </body>
 <script src="{% static 'js/cart.js' %}"></script>
