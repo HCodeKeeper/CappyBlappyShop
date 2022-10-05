@@ -30,7 +30,7 @@ class Cart:
         sub_total_price = 0
         for product_id in self.session_cart.values():
             product = Product.objects.get(id=product_id["self"])
-            addon = ""
+            addon = Addon(id="-1", product=product)
             if product_id["addon_id"] != "-1":
                 addon = Addon.objects.get(id=product_id["addon_id"])
                 sub_total_price += float(addon.price)
@@ -43,6 +43,7 @@ class Cart:
                 "addon": addon
             }
         return {"items": items, "sub_total_price": sub_total_price, "items_count": items_count}
+
 
     def remove_item(self, product_id):
         self.session_cart.pop(product_id)

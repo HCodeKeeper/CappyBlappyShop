@@ -1,8 +1,15 @@
 from services.cart_service import Cart
+import stripe
+from django.urls import reverse
+from cappy_blappy_shop.settings import DOMAIN
 
 
 def price_to_int(price):
     return int(price*100)
+
+
+def int_to_price(value):
+    return value/100
 
 
 def generate_product_line(request):
@@ -11,7 +18,7 @@ def generate_product_line(request):
     line_products = []
     for product, count, addon in raw_products:
         product_name = product.name
-        if addon:
+        if addon.id != "-1":
             product_name += f" + {addon.name}"
         line_products.append(
             {
@@ -20,7 +27,11 @@ def generate_product_line(request):
                     "unit_amount": price_to_int(product.price),
                     "product_data": {
                         "name": product_name,
-                        "description": product.description
+                        "description": product.description,
+                        "metadata": {
+                            "self_id": product.id,
+                            "addon_id": addon.id
+                        }
                     },
                 },
                 "quantity": count,
@@ -28,3 +39,13 @@ def generate_product_line(request):
         )
 
     return line_products
+
+
+def create_session(request):
+    session = stripe.checkout.Session.create(
+        line_items=generate_product_line(request),
+        mode='payment',
+        success_url=DOMAIN + reverse('checkout_succeed'),
+        cancel_url=DOMAIN + reverse('checkout_cancelled'),
+    )
+    return session

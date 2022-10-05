@@ -51,11 +51,12 @@ class Order(models.Model):
     customer = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True)
     creation_date = models.DateTimeField()
     email = models.EmailField()
+    price = models.DecimalField(max_digits=6, decimal_places=2, default=0)
 
 
 class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.DO_NOTHING)
     addon = models.ForeignKey(Addon, on_delete=models.DO_NOTHING)
     quantity = models.IntegerField(default=1)
-    price = models.DecimalField(max_digits=6, decimal_places=2)
+    unit_price = models.DecimalField(max_digits=6, decimal_places=2)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)

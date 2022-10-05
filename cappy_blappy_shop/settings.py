@@ -10,9 +10,18 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
-from pathlib import Path
+from pathlib import Path, PurePath
+import os
 # needed on M1.
 import pymysql
+import stripe
+import dotenv
+
+# .env
+path_to_env = PurePath('cappy_blappy_shop/.env')
+config = dotenv.dotenv_values(path_to_env)
+
+DOMAIN = config["DOMAIN"]
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,7 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-5=!nu+pyk63_kj%5s+2v=)@cp7v03l)fz-3wkg0d@$&nc#2flr'
+SECRET_KEY = config["DJANGO_SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -80,8 +89,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'cbshop',
-        'USER': 'root',
-        'PASSWORD': '12345678',
+        'USER': config["DB_USER"],
+        'PASSWORD': config["DB_PASSWORD"],
         'HOST': '127.0.0.1',
         'PORT': '3306',
         'OPTIONS': {
@@ -101,6 +110,9 @@ CACHES = {
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
+
+# Stripe integration
+stripe.api_key = config["STRIPE_API_SECRET_KEY"]
 
 # Fake PyMySQL's version and install as MySQLdb
 # https://adamj.eu/tech/2020/02/04/how-to-use-pymysql-with-django/
