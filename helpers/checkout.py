@@ -20,23 +20,22 @@ def generate_product_line(request):
         product_name = product.name
         if addon.id != "-1":
             product_name += f" + {addon.name}"
-        line_products.append(
-            {
-                "price_data": {
-                    "currency": "usd",
-                    "unit_amount": price_to_int(product.price),
-                    "product_data": {
-                        "name": product_name,
-                        "description": product.description,
-                        "metadata": {
-                            "self_id": product.id,
-                            "addon_id": addon.id
-                        }
-                    },
-                },
-                "quantity": count,
-            },
-        )
+        metadata = {"self_id": product.id, "addon_id": addon.id}
+        try:
+            price = stripe.Price.create(
+                currency="usd", unit_amount=price_to_int(product.price),
+                product_data={"name": product_name, "metadata": metadata},
+                metadata=metadata
+            )
+        except stripe.error.StripeError:
+            raise
+        else:
+            line_products.append(
+                {
+                    "price": price.stripe_id,
+                    "quantity": count
+                }
+            )
 
     return line_products
 

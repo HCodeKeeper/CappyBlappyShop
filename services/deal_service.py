@@ -14,6 +14,6 @@ def get_random():
 
 def deal_to_json(deal):
     return {
-        deal.title: f"/product/{deal.product_id}"
+        deal.title: f"/product/{deal.product}"
     }
 

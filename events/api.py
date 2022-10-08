@@ -1,7 +1,7 @@
 import pprint
 
 from django.views.decorators.csrf import csrf_exempt
-from datetime import datetime
+from helpers.datetime_utils import get_current_datetime_with_tz
 from services.order_service import fulfill_order
 from django.db import transaction
 from django.db.utils import DatabaseError
@@ -16,7 +16,6 @@ endpoint_secret = "whsec_a1f6b7a036ad4eaec4bdad6c2e628b9d45a3038c6a948c1501d353f
 def checkout_webhook(request):
     payload = request.body
     sig_header = request.META['HTTP_STRIPE_SIGNATURE']
-    event = None
 
     try:
         event = stripe.Webhook.construct_event(
@@ -34,7 +33,7 @@ def checkout_webhook(request):
         session_id = session['id']
         line_items = stripe.checkout.Session.list_line_items(session_id)
         payment_time_created = event["created"]
-        payment_date = datetime.fromtimestamp(payment_time_created)
+        payment_date = get_current_datetime_with_tz(payment_time_created)
         try:
             fulfill_order(session, payment_date, line_items)
         except DatabaseError as e:

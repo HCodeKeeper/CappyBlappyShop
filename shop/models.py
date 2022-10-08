@@ -1,5 +1,7 @@
 from django.db import models
 
+DOESNT_EXIST_ID = "-1"
+
 
 class User(models.Model):
     login = models.CharField(max_length=30)
@@ -56,7 +58,7 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.DO_NOTHING)
-    addon = models.ForeignKey(Addon, on_delete=models.DO_NOTHING)
+    addon = models.ForeignKey(Addon, null=True, on_delete=models.DO_NOTHING)
     quantity = models.IntegerField(default=1)
     unit_price = models.DecimalField(max_digits=6, decimal_places=2)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)

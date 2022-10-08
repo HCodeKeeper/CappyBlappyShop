@@ -1,33 +1,43 @@
-from shop.models import Order, OrderItem
+from shop.models import Order, OrderItem, Product, Addon, DOESNT_EXIST_ID
 from helpers.checkout import int_to_price
-from django.db.utils import DatabaseError
+from django.db.utils import DatabaseError, ConnectionDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist
 from typing import List
 from pprint import pprint
 
 
 class StripeProduct:
-    def __init__(self, product_id, count, addon_id, unit_price):
-        self.product_id = product_id
+    def __init__(self, product, count, addon, unit_price):
+        self.product = product
         self.count = count
-        self.addon_id = addon_id
+        self.addon = addon
         self.unit_price = unit_price
 
     @staticmethod
     def create_with_line_item(line_item):
         count = line_item["quantity"]
-        unit_price = line_item["price"]["unit_amount"]
+        unit_price = int_to_price(line_item["price"]["unit_amount"])
         product_id = line_item["price"]["metadata"]["self_id"]
         addon_id = line_item["price"]["metadata"]["addon_id"]
+        try:
+            product = Product.objects.get(id=product_id)
+            addon = None
+            if addon_id != DOESNT_EXIST_ID:
+                addon = Addon.objects.get(id=addon_id)
+        except (ObjectDoesNotExist, ConnectionDoesNotExist):
+            raise
+        except DatabaseError:
+            raise
 
-        return StripeProduct(product_id, count, addon_id, unit_price)
+        return StripeProduct(product, count, addon, unit_price)
 
-    def add_to_db(self, order_id):
+    def add_to_db(self, order):
         order_item = OrderItem(
-            product=self.product_id,
-            addon=self.addon_id,
+            product=self.product,
+            addon=self.addon,
             quantity=self.count,
             unit_price=self.unit_price,
-            order=order_id
+            order=order
         )
         order_item.save()
 
@@ -59,7 +69,7 @@ class StripeOrder:
             )
         order.save()
         for order_item in self.products:
-            order_item.add_to_db()
+            order_item.add_to_db(order)
 
 
 def fulfill_order(session, payment_date, line_items):
