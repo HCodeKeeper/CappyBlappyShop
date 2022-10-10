@@ -3,7 +3,6 @@ from helpers.checkout import int_to_price
 from django.db.utils import DatabaseError, ConnectionDoesNotExist
 from django.core.exceptions import ObjectDoesNotExist
 from typing import List
-from pprint import pprint
 
 
 class StripeProduct:
@@ -73,7 +72,6 @@ class StripeOrder:
 
 
 def fulfill_order(session, payment_date, line_items):
-    pprint(line_items)
     stripe_order = StripeOrder.create_with_session(session, payment_date, line_items)
     try:
         stripe_order.add_to_db()

@@ -7,7 +7,7 @@ class Cart:
         self.request = request
         if not self.__assert_cart_exists():
             self.__insert_cart_in_session()
-        self.session_cart = self.request.session["cart"]
+        self.session_cart : dict = self.request.session["cart"]
 
     def add(self, product_id, count: int, addon_id="-1"):
         self.session_cart[product_id] = {"self": product_id, "count": count, "addon_id": addon_id}
@@ -44,6 +44,8 @@ class Cart:
             }
         return {"items": items, "sub_total_price": sub_total_price, "items_count": items_count}
 
+    def has_any(self):
+        return bool(len(self.session_cart))
 
     def remove_item(self, product_id):
         self.session_cart.pop(product_id)
