@@ -7,7 +7,7 @@ class Cart:
         self.request = request
         if not self.__assert_cart_exists():
             self.__insert_cart_in_session()
-        self.session_cart : dict = self.request.session["cart"]
+        self.session_cart: dict = self.request.session["cart"]
 
     def add(self, product_id, count: int, addon_id="-1"):
         self.session_cart[product_id] = {"self": product_id, "count": count, "addon_id": addon_id}

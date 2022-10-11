@@ -1,13 +1,11 @@
 from django.db import models
-
+from django.contrib.auth import get_user_model
 DOESNT_EXIST_ID = "-1"
 
 
-class User(models.Model):
-    login = models.CharField(max_length=30)
-    password = models.CharField(max_length=30)
-    email = models.EmailField(max_length=100)
-    tel = models.CharField(max_length=11)
+class Telephone(models.Model):
+    number = models.CharField(max_length=11)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
 
 class Category(models.Model):
@@ -41,7 +39,7 @@ class Addon(models.Model):
 
 class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
     rating = models.SmallIntegerField(default=0)
     upvotes = models.IntegerField(default=0)
@@ -50,7 +48,7 @@ class Review(models.Model):
 
 
 class Order(models.Model):
-    customer = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True)
+    customer = models.ForeignKey(get_user_model(), on_delete=models.DO_NOTHING, null=True)
     creation_date = models.DateTimeField()
     email = models.EmailField()
     price = models.DecimalField(max_digits=6, decimal_places=2, default=0)
