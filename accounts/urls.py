@@ -12,5 +12,7 @@ urlpatterns = [
     path('update_password/verify_email', views.update_password_email, name="update_password_verify_email"),
     path('update_password/credits', views.update_password, name="update_password_credits"),
     path('update_password/perform', views.update_password_perform, name="update_password_perform"),
+    path('edit_profile/perform', views.edit_profile, name="edit_profile"),
+    path('edit_profile/', views.get_edit_profile_page, name="get_edit_profile_page"),
     path('', views.account, name="account"),
 ]

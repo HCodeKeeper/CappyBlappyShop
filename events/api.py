@@ -1,5 +1,3 @@
-import pprint
-
 from django.views.decorators.csrf import csrf_exempt
 from helpers.datetime_utils import get_current_datetime_with_tz
 from services.order_service import fulfill_order

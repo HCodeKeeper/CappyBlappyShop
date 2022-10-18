@@ -1,13 +1,17 @@
 from custom_exceptions.session import EmptyTemporalRegistrationStorage
 from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseBadRequest, HttpResponseServerError
+from django.urls import reverse_lazy
 from .api import *
 from services.session import TemporalRegistrationStorage, TemporalPasswordUpdateTokenStorage
-from services.account import add_user_to_db, lookup_user
+from services.account import *
 from services.account import update_password as update_account_password
 from helpers.account import TokenGenerator
 from django.db.utils import DatabaseError
 from services import mailing
 from smtplib import SMTPException
+from django.db import transaction
+from user_profiles.models import Profile
+from helpers.validators import validate_phone_nubmer
 
 
 def get_login_page(request):
@@ -23,7 +27,7 @@ def get_registration_page(request):
 def register_email(request):
     if request.method == 'POST':
         email = request.POST.get('email', '')
-        if lookup_user(email) is None:
+        if lookup_user(email) is not None:
             return render(request, "registration_invalid.html")
         username = request.POST.get('username', '')
         password = request.POST.get('password', '')
@@ -43,6 +47,7 @@ def get_token_verification_page(request):
     return render(request, "verification.html")
 
 
+@transaction.atomic
 def verificate(request):
     if request.method == 'POST':
         token = request.POST.get('token', '').upper()
@@ -62,7 +67,7 @@ def verificate(request):
                 else:
                     if token == stored_token:
                         try:
-                            add_user_to_db(registration_data)
+                            register(registration_data)
                         except DatabaseError as e:
                             raise DatabaseError("Couldn't add user", content_type='text/plain') from e
                             return HttpResponseServerError()
@@ -118,7 +123,34 @@ def update_password_perform(request):
     return HttpResponseBadRequest()
 
 
+@login_required(login_url=reverse_lazy('login_page'))
 def account(request):
-    if not request.user.is_authenticated:
-        return redirect(reverse('login_page'))
-    return HttpResponse()
+    username = request.user.get_username()
+    profile = Profile.objects.get(user__username=username)
+    return render(request, 'account.html', context={
+        "first_name": profile.first_name,
+        "second_name": profile.second_name,
+        "email": profile.email,
+        "premium_active": profile.has_premium,
+        "telephone": profile.telephone.number
+    })
+
+
+@login_required(login_url=reverse_lazy('login_page'))
+def get_edit_profile_page(request):
+    return render(request, "change_profile_credits.html")
+
+
+@login_required(login_url=reverse_lazy('login_page'))
+def edit_profile(request):
+    if request.method == 'POST':
+        profile = get_profile_from_request(request)
+        first_name = request.POST.get("first_name")
+        second_name = request.POST.get("second_name")
+        telephone = request.POST.get("telephone")
+        if not validate_phone_nubmer(telephone):
+            return HttpResponseBadRequest("Your telephone number is invalid", content_type="text/plain")
+        update_profile(profile, first_name, second_name, telephone)
+
+        return redirect(reverse('account'))
+    return HttpResponseBadRequest()
