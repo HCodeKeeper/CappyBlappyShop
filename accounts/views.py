@@ -116,6 +116,7 @@ def update_password_perform(request):
                                               content_type="text/plain")
             else:
                 update_account_password(email, password)
+                storage.clean()
                 return redirect(reverse('login_page'))
         except DatabaseError:
             raise
