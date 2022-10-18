@@ -5,7 +5,7 @@
     <a href="/">Home</a>
     <div id="buttons">
         <a href="/cart"><button id="cart"><img src="{% static 'images/cart.png' %}"/></button></a>
-        <button id="account"><img src="{% static 'images/account.jpeg' %}"/></button>
+        <a href="{% url 'account' %}"> <button id="account"><img src="{% static 'images/account.jpeg' %}"/></button></a>
         <button id="tel"><img src="{% static 'images/tel.jpeg' %}"/></button>
     </div>
 </div>

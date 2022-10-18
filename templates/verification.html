@@ -8,7 +8,7 @@
     <h1>Submit registration by entering your token from email</h1>
     <form method="post" action="{% url 'verificate' %}">
         {% csrf_token %}
-        <input placeholder="token" name="token" type="text" pattern="[A-Z0-9-]{6}" required>
+        <input placeholder="token" name="token" type="text" pattern="[A-Z0-9-]{6}" required="required">
     </form>
 </body>
 </html>
