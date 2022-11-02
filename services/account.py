@@ -1,9 +1,15 @@
+from smtplib import SMTPException
+
 from django.contrib.auth.models import User
 from django.db.utils import DatabaseError
-from .session import RegistrationData
+
+from custom_exceptions.session import EmptyTemporalRegistrationStorage
+from . import mailing
+from .session import RegistrationData, TemporalRegistrationStorage
 from user_profiles.models import Profile, Telephone
 from custom_exceptions.account import ProfileAlreadyExistException
 from django.core.exceptions import ObjectDoesNotExist
+from helpers.responsibilit_chain import AbstractHandler
 
 
 def register(registration_data: RegistrationData):
@@ -66,3 +72,34 @@ def update_profile(profile: Profile, first_name, second_name, telephone):
     profile.save()
     if telephone:
         add_telephone_with_profile(profile, telephone)
+
+
+class RegistrationCreditsCachingHandler(AbstractHandler):
+    def __init__(self, request, email, username, password, token):
+        super().__init__()
+        self.request = request
+        self.email = email
+        self.username = username
+        self.password = password
+        self.token = token
+
+    def handle(self):
+        storage = TemporalRegistrationStorage(self.request)
+        storage.put(self.email, self.username, self.password, self.token)
+        self.try_next()
+
+
+class RegistrationTokenSendingHandler(AbstractHandler):
+    def __init__(self, email, token):
+        super().__init__()
+        self.email = email
+        self.token = token
+
+    def handle(self):
+        try:
+            mailing.send_registration_token(self.email, self.token)
+        except SMTPException:
+            raise
+        else:
+            self.try_next()
+

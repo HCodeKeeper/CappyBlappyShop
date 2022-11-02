@@ -1,6 +1,7 @@
 from services.cart_service import Cart
 import stripe
 from django.urls import reverse
+from shop.models import DOESNT_EXIST_ID
 from cappy_blappy_shop.settings import DOMAIN
 
 
@@ -17,13 +18,15 @@ def generate_product_line(request):
     raw_products = [product_data.values() for product_data in (cart.get_data()["items"]).values()]
     line_products = []
     for product, count, addon in raw_products:
+        addon_price = 0
         product_name = product.name
-        if addon.id != "-1":
+        if addon.id != DOESNT_EXIST_ID:
             product_name += f" + {addon.name}"
+            addon_price = addon.price
         metadata = {"self_id": product.id, "addon_id": addon.id}
         try:
             price = stripe.Price.create(
-                currency="usd", unit_amount=price_to_int(product.price),
+                currency="usd", unit_amount=price_to_int(product.price + addon_price),
                 product_data={"name": product_name, "metadata": metadata},
                 metadata=metadata
             )
