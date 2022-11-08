@@ -10,3 +10,6 @@ class Profile(models.Model):
     telephone = models.OneToOneField(Telephone, null=True, on_delete=models.SET_NULL)
     email = models.EmailField(unique=True)
     has_premium = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.first_name} {self.second_name} {self.email}"

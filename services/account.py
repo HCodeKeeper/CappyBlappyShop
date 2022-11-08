@@ -2,6 +2,9 @@ from smtplib import SMTPException
 
 from django.contrib.auth.models import User
 from django.db.utils import DatabaseError
+from django.contrib.auth import login as login_user
+from django.contrib.auth import authenticate
+from django.db import IntegrityError, transaction
 
 from custom_exceptions.session import EmptyTemporalRegistrationStorage
 from . import mailing
@@ -10,6 +13,14 @@ from user_profiles.models import Profile, Telephone
 from custom_exceptions.account import ProfileAlreadyExistException
 from django.core.exceptions import ObjectDoesNotExist
 from helpers.responsibilit_chain import AbstractHandler
+
+
+def login(request, username, password):
+    user = authenticate(request, username=username, password=password)
+    if user is not None:
+        login_user(request, user)
+        return True
+    return False
 
 
 def register(registration_data: RegistrationData):
@@ -59,9 +70,14 @@ def get_profile_from_request(request):
 
 
 def add_telephone_with_profile(profile: Profile, number):
-    telephone = Telephone.objects.create(number=number, user=profile.user)
-    profile.telephone = telephone
-    profile.save()
+    try:
+        telephone = Telephone.objects.get(profile=profile)
+        telephone.number = number
+        telephone.save()
+    except Telephone.DoesNotExist:
+        telephone = Telephone.objects.create(number=number, user=profile.user)
+        profile.telephone = telephone
+        profile.save()
 
 
 def update_profile(profile: Profile, first_name, second_name, telephone):

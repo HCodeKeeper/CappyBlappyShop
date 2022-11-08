@@ -10,13 +10,18 @@ from django.shortcuts import redirect, reverse, render
 @login_required(login_url=reverse_lazy('login_page'))
 def account(request):
     username = request.user.get_username()
-    profile = Profile.objects.get(user__username=username)
+    try:
+        profile = Profile.objects.get(user__username=username)
+    except Profile.DoesNotExist:
+        # will also logout you from admin site
+        return redirect(reverse('logout'))
+    telephone_number = profile.telephone.number if profile.telephone else 'Not set'
     return render(request, 'account.html', context={
         "first_name": profile.first_name,
         "second_name": profile.second_name,
         "email": profile.email,
         "premium_active": profile.has_premium,
-        "telephone": profile.telephone.number
+        "telephone": telephone_number
     })
 
 

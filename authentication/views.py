@@ -1,6 +1,5 @@
-from custom_exceptions.session import EmptyTemporalRegistrationStorage
 from django.http import HttpResponseBadRequest, HttpResponseServerError
-from services.session import TemporalRegistrationStorage, TemporalPasswordUpdateTokenStorage
+from services.session import TemporalPasswordUpdateTokenStorage
 from services.account import *
 from services.account import update_password as update_account_password
 from helpers.account import TokenGenerator
@@ -8,9 +7,9 @@ from django.db.utils import DatabaseError
 from services import mailing
 from smtplib import SMTPException
 from django.db import transaction
-from django.contrib.auth import authenticate, logout as logout_user
+from django.contrib.auth import logout as logout_user
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login as login_user
+from services.account import login as login_user
 from django.shortcuts import redirect, reverse, render
 from django.http import HttpResponseNotAllowed
 
@@ -75,8 +74,9 @@ def verificate(request):
                             return HttpResponseServerError()
                         else:
                             registration_storage.clean()
-                            # Succeeded
-                            return redirect(reverse("account"))
+                            if login_user(request, registration_data.username, registration_data.password):
+                                return redirect(reverse("account"))
+                            return redirect(reverse('home'))
 
     return HttpResponseNotAllowed
 
@@ -119,7 +119,7 @@ def update_password_perform(request):
             else:
                 update_account_password(email, password)
                 storage.clean()
-                return redirect(reverse('login_page'))
+                return redirect(reverse('account'))
         except DatabaseError:
             raise
             return HttpResponseServerError()
@@ -130,9 +130,7 @@ def login(request):
     if request.method == 'POST':
         username = request.POST.get('username', '')
         password = request.POST.get('password', '')
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login_user(request, user)
+        if login_user(request, username, password):
             return redirect(reverse('account'))
         return render(request, 'login_data_invalid.html')
     return HttpResponseNotAllowed()
