@@ -2,6 +2,12 @@ from shop.models import Product, Review, Deal, Addon
 from django.db.models import Model
 from django.http import JsonResponse
 from django.core.paginator import Paginator
+from services import deal_service
+
+
+def insert_discount_in_products(products: [Product]):
+    for product in products:
+        product.discounted_price = deal_service.get_discounted_price(product)
 
 
 class Context:
@@ -20,7 +26,7 @@ class Context:
         return self.deal
 
 
-# context = everything related for a product page
+# context = everything related to a product page
 def get_product_context(product_id) -> Context:
     try:
         product = Product.objects.get(id=product_id)
@@ -29,7 +35,7 @@ def get_product_context(product_id) -> Context:
             deal = Deal.objects.get(product=product.id)
         except Deal.DoesNotExist:
             deal = Deal()
-            deal.percents = 100
+            deal.percents = 0
         return Context(product, addons, deal)
     except Product.DoesNotExist as e:
         raise e

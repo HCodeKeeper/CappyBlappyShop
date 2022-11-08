@@ -1,12 +1,14 @@
 from .models import Product
 from django.shortcuts import render
-from services import product_service, cart_service
+from services import product_service, cart_service, deal_service
 from shop.api import *
 
 
 def index(request):
+    products = product_service.Catalogue.get_some_random_products()
+    product_service.insert_discount_in_products(products)
     context = {
-        "products": product_service.Catalogue.get_some_random_products()
+        "products": products
     }
     return render(request, "index.html", context)
 
@@ -16,6 +18,7 @@ def catalogue(request):
     page_num = int(request.GET.get('page', '1'))
     try:
         products = product_service.get_products_page(name, page_num)
+        product_service.insert_discount_in_products(products.object_list)
         context = {
             "products": products,
             "page_num": page_num,
@@ -30,10 +33,11 @@ def product(request, product_id):
     cart_service.Cart(request)
     try:
         product_context = product_service.get_product_context(product_id)
+        _product = product_context.get_product()
         context = {
-            "product": product_context.get_product(),
+            "product": _product,
             "addons": product_context.get_addons(),
-            "deal": product_context.get_deal()
+            "discounted_price": deal_service.get_discounted_price(_product)
         }
         return render(request, "product.html", context)
     except Product.DoesNotExist:

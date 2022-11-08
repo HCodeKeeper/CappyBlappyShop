@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title> CBShop:{{ query }}</title>
+    <link rel="stylesheet" href="{% static 'styles/catalogue.css' %}">
 </head>
 <body>
     <header>
@@ -30,7 +31,12 @@
                             {% endif %}
                         </span>
                         <span>
-                            <p6 class="price_tag">{{ product.price }}$</p6>
+                            {% if product.price == product.discounted_price %}
+                                <p6 class="price_tag">{{ product.price }}$</p6>
+                            {% else %}
+                                <p6 class="unavailable_price">{{ product.price }}</p6>
+                                <p6><strong class="discounted_price"> {{ product.discounted_price }} $</strong></p6>
+                            {% endif %}
                         </span>
                     </div>
                 </th>

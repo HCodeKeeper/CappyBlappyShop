@@ -1,5 +1,6 @@
 from django.http import HttpRequest
-from shop.models import Product, Addon
+from shop.models import Product, Addon, Deal, DOESNT_EXIST_ID
+from services.deal_service import get_discounted_price
 
 
 class Cart:
@@ -9,7 +10,7 @@ class Cart:
             self.__insert_cart_in_session()
         self.session_cart: dict = self.request.session["cart"]
 
-    def add(self, product_id, count: int, addon_id="-1"):
+    def add(self, product_id, count: int, addon_id=DOESNT_EXIST_ID):
         self.session_cart[product_id] = {"self": product_id, "count": count, "addon_id": addon_id}
         self.request.session.modified = True
 
@@ -29,18 +30,24 @@ class Cart:
         items_count = 0
         sub_total_price = 0
         for product_id in self.session_cart.values():
+            product_items_price = 0
             product = Product.objects.get(id=product_id["self"])
-            addon = Addon(id="-1", product=product)
-            if product_id["addon_id"] != "-1":
+            addon = None
+            if product_id["addon_id"] != DOESNT_EXIST_ID:
                 addon = Addon.objects.get(id=product_id["addon_id"])
-                sub_total_price += float(addon.price)
+                product_items_price += float(addon.price)
+            else:
+                addon = Addon(id=DOESNT_EXIST_ID, product=product)
             count = product_id["count"]
             items_count += int(count)
-            sub_total_price += float(product.price) * int(count)
+            product_discounted_price = get_discounted_price(product)
+            product_items_price += product_discounted_price * int(count)
+            sub_total_price += product_items_price
             items[product_id["self"]] = {
                 "self": product,
                 "count": count,
-                "addon": addon
+                "addon": addon,
+                "product_discounted_price": product_discounted_price
             }
         return {"items": items, "sub_total_price": sub_total_price, "items_count": items_count}
 

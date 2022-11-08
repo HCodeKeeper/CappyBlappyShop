@@ -15,7 +15,14 @@
         <div class="preview_section">
             <img id="product_img" src="{% static product.image_src %}">
             <h2 id="product_name">{{ product.name }}</h2>
-            <p><strong>{{ product.price }}$</strong></p>
+            {% if product.price == discounted_price %}
+                <p><strong>{{ product.price }}$</strong></p>
+
+            {% else %}
+                <p><strong class="unavailable_price">{{ product.price }} </strong>
+                <strong class="discounted_price">{{ discounted_price }} $</strong></p>
+            {% endif %}
+
             <div id="purchase_form">
             {% csrf_token %}
                 <div class="all_block">
@@ -44,7 +51,7 @@
             <div class="buttons">
                 <button id="description" onclick="render_description('{{ product.description }}');">Description</button>
                 <button id="contacts" onclick="render_contacts('{{ product.manufacturer }}', '{{ product.contact_info }}');">Contacts</button>
-                <button id="reviews">Reviews</button>
+                <button id="reviews" onclick="render_reviews('{{ product.id }}',  1)">Reviews</button>
             </div>
             <div class="body_section">
                 <p>{{ product.description }}</p>

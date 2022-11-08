@@ -32,7 +32,7 @@ def edit_profile(request):
         first_name = request.POST.get("first_name")
         second_name = request.POST.get("second_name")
         telephone = request.POST.get("telephone")
-        if not validate_phone_number(telephone):
+        if telephone and not validate_phone_number(telephone):
             return HttpResponseBadRequest("Your telephone number is invalid", content_type="text/plain")
         update_profile(profile, first_name, second_name, telephone)
 

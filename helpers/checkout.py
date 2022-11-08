@@ -1,8 +1,11 @@
+import decimal
+
 from services.cart_service import Cart
 import stripe
 from django.urls import reverse
 from shop.models import DOESNT_EXIST_ID
 from cappy_blappy_shop.settings import DOMAIN
+from services.deal_service import get_discounted_price
 
 
 def price_to_int(price):
@@ -17,7 +20,7 @@ def generate_product_line(request):
     cart = Cart(request)
     raw_products = [product_data.values() for product_data in (cart.get_data()["items"]).values()]
     line_products = []
-    for product, count, addon in raw_products:
+    for product, count, addon, discounted_price in raw_products:
         addon_price = 0
         product_name = product.name
         if addon.id != DOESNT_EXIST_ID:
@@ -26,7 +29,7 @@ def generate_product_line(request):
         metadata = {"self_id": product.id, "addon_id": addon.id}
         try:
             price = stripe.Price.create(
-                currency="usd", unit_amount=price_to_int(product.price + addon_price),
+                currency="usd", unit_amount=price_to_int(decimal.Decimal(discounted_price) + addon_price),
                 product_data={"name": product_name, "metadata": metadata},
                 metadata=metadata
             )

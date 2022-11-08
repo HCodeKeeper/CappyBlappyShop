@@ -12,6 +12,19 @@
     margin-left: 7%;
 }
 
+.unavailable_price{
+    color: #b3b3b3;
+    text-decoration-line: line-through;
+}
+
+.discounted_price{
+    color: #ff0013;
+}
+
+.discount{
+    color: orange;
+}
+
 #product_img{
     width: 100%;
 }

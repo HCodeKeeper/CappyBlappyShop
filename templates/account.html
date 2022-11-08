@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="{% static 'styles/account.css' %}">
 </head>
 <body>
+<header>
+        {% include 'fragments/top_bar.html' %}
+    </header>
 <div>
 <h3>Name: </h3><h1>{{ first_name }} {{ second_name }}</h1>
 </div>
