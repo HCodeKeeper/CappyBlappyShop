@@ -12,14 +12,17 @@ from django.contrib.auth.decorators import login_required
 from services.account import login as login_user
 from django.shortcuts import redirect, reverse, render
 from django.http import HttpResponseNotAllowed
+from django.views.decorators.cache import cache_page
 
 
+@cache_page(15*60)
 def get_login_page(request):
     if request.user.is_authenticated:
         return redirect(reverse('home'))
     return render(request, "login.html")
 
 
+@cache_page(15*60)
 def get_registration_page(request):
     return render(request, "registration.html")
 
@@ -44,6 +47,7 @@ def register_email(request):
     return HttpResponseNotAllowed
 
 
+@cache_page(15*60)
 def get_token_verification_page(request):
     return render(request, "verification.html")
 
@@ -81,7 +85,7 @@ def verificate(request):
     return HttpResponseNotAllowed
 
 
-# Forgot password views
+@cache_page(15*60)
 def update_password_email(request):
     return render(request, "update_password_email.html")
 

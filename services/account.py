@@ -4,9 +4,7 @@ from django.contrib.auth.models import User
 from django.db.utils import DatabaseError
 from django.contrib.auth import login as login_user
 from django.contrib.auth import authenticate
-from django.db import IntegrityError, transaction
-
-from custom_exceptions.session import EmptyTemporalRegistrationStorage
+from django.core.paginator import Paginator
 from . import mailing
 from .session import RegistrationData, TemporalRegistrationStorage
 from user_profiles.models import Profile, Telephone
@@ -50,7 +48,7 @@ def add_profile_to_user(user: User):
 def lookup_user(email: str):
     try:
         user = User.objects.get(email=email)
-    except ObjectDoesNotExist:
+    except User.DoesNotExist:
         user = None
     return user
 
@@ -65,7 +63,10 @@ def update_password(email, password):
 
 def get_profile_from_request(request):
     username = request.user.get_username()
-    profile = Profile.objects.get(user__username=username)
+    try:
+        profile = Profile.objects.get(user__username=username)
+    except Profile.DoesNotExist:
+        raise
     return profile
 
 
@@ -118,4 +119,3 @@ class RegistrationTokenSendingHandler(AbstractHandler):
             raise
         else:
             self.try_next()
-
