@@ -1,3 +1,5 @@
+import decimal
+
 from django.http import HttpRequest
 from shop.models import Product, Addon, Deal, DOESNT_EXIST_ID
 from services.deal_service import get_discounted_price
@@ -35,7 +37,7 @@ class Cart:
             addon = None
             if product_id["addon_id"] != DOESNT_EXIST_ID:
                 addon = Addon.objects.get(id=product_id["addon_id"])
-                product_items_price += float(addon.price)
+                product_items_price += decimal.Decimal(addon.price)
             else:
                 addon = Addon(id=DOESNT_EXIST_ID, product=product)
             count = product_id["count"]

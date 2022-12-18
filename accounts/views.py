@@ -5,6 +5,7 @@ from user_profiles.models import Profile
 from helpers.validators import validate_phone_number
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, reverse, render
+from django.views.decorators.cache import cache_page
 
 
 @login_required(login_url=reverse_lazy('login_page'))
@@ -26,6 +27,7 @@ def account(request):
 
 
 @login_required(login_url=reverse_lazy('login_page'))
+@cache_page(15*60)
 def get_edit_profile_page(request):
     return render(request, "change_profile_credits.html")
 
