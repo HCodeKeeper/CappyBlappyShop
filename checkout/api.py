@@ -5,6 +5,7 @@ from services.cart_service import Cart
 from cappy_blappy_shop.settings import DOMAIN
 from helpers.checkout import generate_product_line
 from django.http import HttpResponseNotAllowed, HttpResponseServerError, HttpResponseBadRequest
+from services.stripe_session import get_customer
 
 
 def create_checkout_session(request):
