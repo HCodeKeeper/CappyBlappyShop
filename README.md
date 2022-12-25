@@ -1,6 +1,6 @@
 # CappyBlappyShop
 
-##.env file structure:
+## .env file structure:
 ```
 SERVER_PORT = 
 DOMAIN= 
