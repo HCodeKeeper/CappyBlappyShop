@@ -2,6 +2,10 @@ from .models import Product
 from django.shortcuts import render
 from services import product_service, cart_service, deal_service
 from shop.api import *
+from rest_framework import viewsets
+from rest_framework.response import Response
+from .serializers import ProductPreviewSerializer
+from .models import Product
 
 
 def index(request):
@@ -11,6 +15,12 @@ def index(request):
         "products": products
     }
     return render(request, "index.html", context)
+
+
+class CatalogueViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductPreviewSerializer
+
 
 
 def catalogue(request):
