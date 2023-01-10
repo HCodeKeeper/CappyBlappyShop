@@ -4,7 +4,7 @@ from services import product_service, cart_service, deal_service
 from shop.api import *
 from rest_framework import viewsets
 from rest_framework.response import Response
-from .serializers import ProductPreviewSerializer
+from .serializers import ProductPreviewSerializer, ProductCompoundSerializer
 from .models import Product
 
 
@@ -52,3 +52,8 @@ def product(request, product_id):
         return render(request, "product.html", context)
     except Product.DoesNotExist:
         return HttpResponseBadRequest('This product doesn\'t exist')
+
+
+class ProductPageViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductCompoundSerializer
