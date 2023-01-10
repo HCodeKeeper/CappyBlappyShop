@@ -17,7 +17,7 @@ def int_to_price(value):
 
 
 def generate_product_line(request):
-    cart = Cart(request)
+    cart = Cart(request.session)
     raw_products = [product_data.values() for product_data in (cart.get_data()["items"]).values()]
     line_products = []
     for product, count, addon, discounted_price in raw_products:

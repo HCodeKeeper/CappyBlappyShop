@@ -40,7 +40,7 @@ def catalogue(request):
 
 
 def product(request, product_id):
-    cart_service.Cart(request)
+    cart_service.Cart(request.session)
     try:
         product_context = product_service.get_product_context(product_id)
         _product = product_context.get_product()

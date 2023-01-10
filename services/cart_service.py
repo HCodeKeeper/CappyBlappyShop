@@ -6,15 +6,15 @@ from services.deal_service import get_discounted_price
 
 
 class Cart:
-    def __init__(self, request: HttpRequest):
-        self.request = request
+    def __init__(self, session):
+        self.session = session
         if not self.__assert_cart_exists():
             self.__insert_cart_in_session()
-        self.session_cart: dict = self.request.session["cart"]
+        self.session_cart: dict = self.session["cart"]
 
     def add(self, product_id, count: int, addon_id=DOESNT_EXIST_ID):
         self.session_cart[product_id] = {"self": product_id, "count": count, "addon_id": addon_id}
-        self.request.session.modified = True
+        self.session.modified = True
 
     def set(self, product_id, count: int = None, addon_id=None):
         if count is not None:
@@ -25,7 +25,7 @@ class Cart:
     def update_multiple_count(self, id_counts: [str, int]):
         for entry in id_counts:
             self.session_cart[entry[0]]["count"] = entry[1]
-        self.request.session.modified = True
+        self.session.modified = True
 
     def get_data(self) -> dict:
         items = {}
@@ -46,9 +46,9 @@ class Cart:
             product_items_price += product_discounted_price * int(count)
             sub_total_price += product_items_price
             items[product_id["self"]] = {
-                "self": product,
+                "self": {"id": product.id, "name": product.name, "price": product.price},
                 "count": count,
-                "addon": addon,
+                "addon": {"id" : addon.id, "name":addon.name, "price": addon.price},
                 "product_discounted_price": product_discounted_price
             }
         return {"items": items, "sub_total_price": sub_total_price, "items_count": items_count}
@@ -58,7 +58,7 @@ class Cart:
 
     def remove_item(self, product_id):
         self.session_cart.pop(product_id)
-        self.request.session.modified = True
+        self.session.modified = True
 
     def remove_addon(self, product_id):
         self.session_cart[product_id]["addon_id"] = "-1"
@@ -67,7 +67,7 @@ class Cart:
         self.__insert_cart_in_session()
 
     def __assert_cart_exists(self):
-        cart = self.request.session.get("cart", None)
+        cart = self.session.get("cart", None)
         if cart is None:
             return False
         return True
@@ -76,4 +76,4 @@ class Cart:
         return bool(self.session_cart.get(product_id, False))
 
     def __insert_cart_in_session(self):
-        self.request.session["cart"] = {}
+        self.session["cart"] = {}
