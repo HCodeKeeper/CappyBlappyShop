@@ -1,0 +1,16 @@
+# CappyBlappyShop
+
+## .env file structure:
+```
+SERVER_PORT = 
+DOMAIN= 
+STRIPE_API_SECRET_KEY=
+DB_USER=
+DB_PASSWORD=
+DJANGO_SECRET_KEY=
+
+EMAIL_HOST = 
+EMAIL_PORT = 
+EMAIL_HOST_USER = 
+EMAIL_HOST_PASSWORD = 
+```
