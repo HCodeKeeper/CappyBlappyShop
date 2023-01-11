@@ -15,7 +15,7 @@ EMAIL_HOST_USER =
 EMAIL_HOST_PASSWORD = 
 ```
 ## Running the project
-run django server''''''
+run django server''' '''
 run redis server
 ```
 redis-server
