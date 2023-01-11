@@ -14,3 +14,13 @@ EMAIL_PORT =
 EMAIL_HOST_USER = 
 EMAIL_HOST_PASSWORD = 
 ```
+## Running the project
+run django server
+run redis server
+```
+redis-server
+```
+run stripe listener
+```
+stripe listen --events checkout.session.completed --forward-to localhost:<your_port; default: 8000>/event/checkout_succeeded
+```
