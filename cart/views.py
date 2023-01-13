@@ -1,10 +1,10 @@
 from services.cart_service import Cart
-from rest_framework.decorators import api_view, action
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 from rest_framework.reverse import reverse
 from django.http.response import HttpResponseRedirect
-from .serializers import ItemSerializer, Item
+from .serializers import ItemSerializer
 from rest_framework.status import HTTP_422_UNPROCESSABLE_ENTITY
 
 

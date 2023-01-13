@@ -4,8 +4,7 @@ import stripe
 from services.cart_service import Cart
 from cappy_blappy_shop.settings import DOMAIN
 from helpers.checkout import generate_product_line
-from django.http import HttpResponseNotAllowed, HttpResponseServerError, HttpResponsePermanentRedirect
-from services.stripe_session import get_customer
+from django.http import HttpResponsePermanentRedirect
 from rest_framework.decorators import api_view
 from rest_framework.status import HTTP_500_INTERNAL_SERVER_ERROR
 from rest_framework.response import Response
