@@ -64,3 +64,4 @@ class ProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
     permission_classes = []
 
+    def get(self, request):

@@ -1,7 +1,5 @@
-from django.urls import include, path
+from django.urls import path
 from . import views
-from rest_framework.routers import SimpleRouter
 
-router = SimpleRouter()
-router.register(r'', views.ProfileView)
-urlpatterns = router.urls
+
+urlpatterns = [path(r'', views.ProfileView.as_view(), name="profile")]
