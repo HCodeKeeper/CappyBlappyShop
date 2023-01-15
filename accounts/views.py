@@ -8,16 +8,6 @@ from django.views.decorators.cache import cache_page
 from rest_framework import generics
 from user_profiles.models import Profile
 from .serializers import ProfileSerializer
-from authlib.integrations.django_oauth2 import ResourceProtector
-from helpers.api_validators import Auth0JWTBearerTokenValidator
-
-
-require_auth = ResourceProtector()
-validator = Auth0JWTBearerTokenValidator(
-    "dev-oemidol7f2vhalkn.us.auth0.com",
-    "http://localhost:8000/api"
-)
-require_auth.register_token_validator(validator)
 
 
 @login_required(login_url=reverse_lazy('login_page'))
@@ -60,8 +50,12 @@ def edit_profile(request):
 
 
 class ProfileView(generics.RetrieveUpdateAPIView):
-    queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = []
 
-    def get(self, request):
+    def get_object(self):
+        user = self.request.user
+        try:
+            return Profile.objects.get(user_id=9) #Profile.objects.get(user_id=user.id)
+        except ObjectDoesNotExist:
+            raise
