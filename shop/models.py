@@ -4,7 +4,7 @@ DOESNT_EXIST_ID = "-1"
 
 
 class Telephone(models.Model):
-    number = models.CharField(max_length=15)
+    number = models.CharField(max_length=15, unique=True)
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
 
     def __str__(self):

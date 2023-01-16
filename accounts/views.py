@@ -1,6 +1,9 @@
+import jwt
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.http import HttpResponseBadRequest
 from django.urls import reverse_lazy
 from services.account import *
+from cappy_blappy_shop.settings import SECRET_KEY
 from helpers.validators import validate_phone_number
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, reverse, render
@@ -8,6 +11,8 @@ from django.views.decorators.cache import cache_page
 from rest_framework import generics
 from user_profiles.models import Profile
 from .serializers import ProfileSerializer
+from rest_framework.response import Response
+from rest_framework.status import HTTP_401_UNAUTHORIZED
 
 
 @login_required(login_url=reverse_lazy('login_page'))
@@ -51,11 +56,17 @@ def edit_profile(request):
 
 class ProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
-    permission_classes = []
 
     def get_object(self):
-        user = self.request.user
         try:
-            return Profile.objects.get(user_id=9) #Profile.objects.get(user_id=user.id)
+            jwt_authenticator = JWTAuthentication()
+            user, _ = jwt_authenticator.authenticate(self.request)
+        except jwt.ExpiredSignatureError:
+            raise
+        except KeyError:
+            raise
+        try:
+            return Profile.objects.get(user=user)
         except ObjectDoesNotExist:
             raise
+
