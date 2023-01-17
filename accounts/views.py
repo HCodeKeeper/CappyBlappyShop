@@ -65,6 +65,8 @@ class ProfileView(generics.RetrieveUpdateAPIView):
             raise
         except KeyError:
             raise
+        except TypeError:
+            raise
         try:
             return Profile.objects.get(user=user)
         except ObjectDoesNotExist:
