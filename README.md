@@ -58,3 +58,46 @@ vine==5.0.0
 wcwidth==0.2.5
 wrapt==1.14.1
 ```
+## API Endpoints
+Every endpoint supports OPTION so you can see the methods and required payload data.
+
+#### api/products
+Accepts: [GET]
+Responds with: catalogue of product previews
+* #### <product_pk>
+Accepts: [GET]
+Responds with: specified product preview from catalogue
+#### api/product
+Accepts: [GET]
+Responds with: list of composite products(product itself, addon, discount, ...)
+* #### <product_pk>/
+Accepts: [GET]
+Responds with: specified composite product
+#### api/cart/
+Accepts:[GET, POST - clears the cart]
+* #### item/
+Accepts: [POST]
+Request: product id, addon id, count
+Responds with: cart redirect
+* * #### <item_pk>/
+Accepts: [DELETE]
+Responds with: cart redirect
+#### api/account/
+Accepts: [GET, PUT, PATCH]
+Requests: See OPTION for detailed information
+Responds with: GET - profile information, (PUT, PATCH) - redirect to GET
+#### api/checkout/
+Creates checkout session in Stripe and responds with url pointing towards Stripe checkout page
+* #### success
+* #### cancel
+#### api/token/ [name='token_obtain_pair']
+Accepts: [POST]
+Requests: pair of registered user's name and password
+Responds with: returns pair of access token and refresh token
+#### api/token/refresh/ [name='token_refresh']
+Accepts: [POST]
+Requests: refresh token
+Responds with: access token
+#### api/token/verify/ [name='token_verify']
+Accepts: [GET]
+Responds with: if token is valid and unexpired
