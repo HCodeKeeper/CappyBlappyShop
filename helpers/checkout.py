@@ -1,11 +1,10 @@
 import decimal
 
-from services.cart_service import Cart
+from services.cart_service import Cart, get_data_for_checkout
 import stripe
 from django.urls import reverse
 from shop.models import DOESNT_EXIST_ID
 from cappy_blappy_shop.settings import DOMAIN
-from services.deal_service import get_discounted_price
 
 
 def price_to_int(price):
@@ -18,7 +17,11 @@ def int_to_price(value):
 
 def generate_product_line(request):
     cart = Cart(request.session)
-    raw_products = [product_data.values() for product_data in (cart.get_data()["items"]).values()]
+    raw_products = list()
+    items_for_checkout = get_data_for_checkout(cart.session_cart)["items"]
+    for product_data in items_for_checkout.values():
+        raw_products.append(product_data.values())
+
     line_products = []
     for product, count, addon, discounted_price in raw_products:
         addon_price = 0

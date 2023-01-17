@@ -30,4 +30,4 @@ def create_checkout_session(request):
         raise e
         return Response(status=HTTP_500_INTERNAL_SERVER_ERROR)
 
-    return HttpResponsePermanentRedirect(redirect_to=checkout_session.url)
+    return Response({'Proceed to checkout in a browser' : checkout_session.url})
