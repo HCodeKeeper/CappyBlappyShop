@@ -11,12 +11,12 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path, PurePath
-import os
 # needed on M1.
 import pymysql
 import stripe
 import dotenv
 from datetime import timedelta
+
 
 # .env
 path_to_env = PurePath('cappy_blappy_shop/.env')
@@ -46,6 +46,14 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
+
+
+# Celery Configuration Options
+CELERY_TIMEZONE = config.get("TIME_ZONE")
+# Need to be set to False not to be logged in prod
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=10), # needs to be LESS in PRODUCTION
@@ -200,7 +208,7 @@ PASSWORD_HASHERS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = config.get("TIME_ZONE")
 
 USE_I18N = True
 
