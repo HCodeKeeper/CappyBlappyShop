@@ -35,7 +35,7 @@ class CartViewSet(ViewSet):
         cart.remove_item(item_pk)
         return HttpResponseRedirect(redirect_to=reverse('cart-list'))
 
-    def update(self, request):
+    def put(self, request):
         cart = Cart(request.session)
         cart.clear()
         return HttpResponseRedirect(redirect_to=reverse('cart-list'))

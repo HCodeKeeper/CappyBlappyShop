@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-DOESNT_EXIST_ID = "-1"
+DOESNT_EXIST_ID = -1
 
 
 class Telephone(models.Model):
