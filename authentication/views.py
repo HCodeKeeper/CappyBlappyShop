@@ -1,4 +1,6 @@
 from django.http import HttpResponseBadRequest, HttpResponseServerError
+
+from custom_exceptions.session import EmptyTemporalRegistrationStorage
 from services.session import TemporalPasswordUpdateTokenStorage
 from services.account import *
 from services.account import update_password as update_account_password
@@ -12,6 +14,7 @@ from django.contrib.auth.decorators import login_required
 from services.account import login as login_user
 from django.shortcuts import redirect, reverse, render
 from django.http import HttpResponseNotAllowed
+from . import tasks
 
 
 def get_login_page(request):
@@ -32,11 +35,11 @@ def register_email(request):
         username = request.POST.get('username', '')
         password = request.POST.get('password', '')
         token = TokenGenerator.get_token()
-        credits_cacher = RegistrationCreditsCachingHandler(request, email, username, password, token)
-        token_sender = RegistrationTokenSendingHandler(email, token)
-        credits_cacher.set_next(token_sender)
+        credits_cacher_chain_part = RegistrationCreditsCachingHandler(request, email, username, password, token)
+        token_sender_chain_part = RegistrationTokenSendingHandler(email, token)
+        credits_cacher_chain_part.set_next(token_sender_chain_part)
         try:
-            credits_cacher.handle()
+            credits_cacher_chain_part.handle()
         except SMTPException:
             raise
 
@@ -54,31 +57,28 @@ def verificate(request):
         token = request.POST.get('token', '').upper()
         if not TokenGenerator.validate_token_pattern(token):
             return HttpResponseBadRequest("Your token is invalid", content_type='text/plain')
-        else:
+        try:
+            registration_storage = TemporalRegistrationStorage(request)
+            registration_data = registration_storage.get()
+        except EmptyTemporalRegistrationStorage:
+            # log
+            return HttpResponseServerError()
+        try:
+            stored_token = registration_data.get_token()
+        except EmptyTemporalRegistrationStorage:
+            return HttpResponseBadRequest("Your token is different from what we sent", content_type='text/plain')
+        if token == stored_token:
             try:
-                registration_storage = TemporalRegistrationStorage(request)
-                registration_data = registration_storage.get()
-            except EmptyTemporalRegistrationStorage:
-                raise
-            else:
-                try:
-                    stored_token = registration_data.get_token()
-                except EmptyTemporalRegistrationStorage:
-                    return HttpResponseBadRequest("Your token is different from what we sent", content_type='text/plain')
-                else:
-                    if token == stored_token:
-                        try:
-                            register(registration_data)
-                        except DatabaseError as e:
-                            raise DatabaseError("Couldn't add user", content_type='text/plain') from e
-                            return HttpResponseServerError()
-                        else:
-                            registration_storage.clean()
-                            if login_user(request, registration_data.username, registration_data.password):
-                                return redirect(reverse("account"))
-                            return redirect(reverse('home'))
+                register(registration_data)
+            except DatabaseError as e:
+                raise DatabaseError("Couldn't add user", content_type='text/plain') from e
+                return HttpResponseServerError()
+        registration_storage.clean()
+        if login_user(request, registration_data.username, registration_data.password):
+            return redirect(reverse("account"))
+        return redirect(reverse('home'))
 
-    return HttpResponseNotAllowed
+    return HttpResponseNotAllowed()
 
 
 # Forgot password views
@@ -97,7 +97,7 @@ def update_password(request):
                 token = TokenGenerator.get_token()
                 storage = TemporalPasswordUpdateTokenStorage(request)
                 storage.put(token)
-                mailing.send_password_update_token(email, token)
+                tasks.send_password_update_token.delay(email, token)
             except SMTPException:
                 raise
             return render(request, "update_password.html", context={'email': email})
