@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'authentication',
 ]
 
 MIDDLEWARE = [
@@ -70,6 +71,16 @@ EMAIL_HOST_PASSWORD = config["EMAIL_HOST_PASSWORD"]
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
+
+# Celery Configuration Options
+CELERY_TIMEZONE = config.get("TIME_ZONE")
+# Need to be set to False not to be logged in prod
+CELERY_BROKER_URL = config.get("CELERY_BROKER")
+CELERY_RESULT_BACKEND = config.get("CONFIG_BACKEND")
+CELERY_TASK_TRACK_STARTED = True
+#CELERY_IGNORE_RESULT = False
+#CELERY_TASK_IGNORE_RESULT = False
+CELERY_TASK_TIME_LIMIT = 30 * 60
 
 ROOT_URLCONF = 'cappy_blappy_shop.urls'
 

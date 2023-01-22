@@ -1,1 +1,7 @@
 **/.env
+.DS_Store
+*.pyo
+*.pyc
+venv
+env
+.idea/
