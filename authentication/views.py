@@ -1,5 +1,4 @@
 from django.http import HttpResponseBadRequest, HttpResponseServerError
-
 from custom_exceptions.session import EmptyTemporalRegistrationStorage
 from services.session import TemporalPasswordUpdateTokenStorage
 from services.account import *
