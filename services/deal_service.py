@@ -19,13 +19,19 @@ def deal_to_json(deal):
     }
 
 
-def get_discounted_price(product: Product):
-    price = Decimal(product.price)
+def _apply_discount_on_price(full_price: Decimal, discount_percentage: int) -> Decimal:
+    discount_to_money = full_price * Decimal(int(discount_percentage) / 100)
+    price = full_price - discount_to_money
+    price = round(price, 2)
+    return price
+
+
+# get discounted price or full if no discounts are available
+def get_discounted_price(product: Product) -> Decimal:
+    full_price = Decimal(product.price)
     try:
         discount = Deal.objects.get(product=product)
     except Deal.DoesNotExist:
-        pass
-    else:
-        price -= price * Decimal(int(discount.percents) / 100)
-        price = round(price, 2)
-    return price
+        return full_price
+    discounted_price = _apply_discount_on_price(full_price, discount.percents)
+    return discounted_price

@@ -1,5 +1,5 @@
-from shop.models import Product, Review, Deal, Addon
-from django.db.models import Model
+from shop.models import Product, Deal, Addon
+from typing import List
 from django.http import JsonResponse
 from django.core.paginator import Paginator
 from services import deal_service
@@ -19,7 +19,7 @@ class Context:
     def get_product(self) -> Product:
         return self.product
 
-    def get_addons(self) -> Addon:
+    def get_addons(self) -> List[Addon]:
         return self.addons
 
     def get_deal(self) -> Deal:
@@ -30,10 +30,10 @@ class Context:
 def get_product_context(product_id) -> Context:
     try:
         product = Product.objects.get(id=product_id)
-        addons = Addon.objects.filter(product=product.id)
+        addons = Addon.objects.filter(product=product)
         try:
-            deal = Deal.objects.get(product=product.id)
-        except Deal.DoesNotExist:
+            deal = Deal.objects.get(product=product)
+        except Deal.DoesNotExist as e:
             deal = Deal()
             deal.percents = 0
         return Context(product, addons, deal)
