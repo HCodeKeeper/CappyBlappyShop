@@ -33,7 +33,7 @@ def get_product_context(product_id) -> Context:
         addons = Addon.objects.filter(product=product)
         try:
             deal = Deal.objects.get(product=product)
-        except Deal.DoesNotExist as e:
+        except Deal.DoesNotExist:
             deal = Deal()
             deal.percents = 0
         return Context(product, addons, deal)
@@ -42,14 +42,14 @@ def get_product_context(product_id) -> Context:
 
 
 def get_random_products(quantity):
-    products = Product.objects.all()
-    if products.count() > quantity:
-        products = products[0:quantity]
+    table_name = Product.objects.model._meta.db_table
+    query_random_products = f'''SELECT * FROM {table_name} ORDER BY RAND() LIMIT {quantity};'''
+    products = Product.objects.raw(query_random_products)
     return products
 
 
-def get_products_page(name, page_num):
-    items_per_page_count = 8
+def get_products_page(name, page_num, items_per_page: int = 8):
+    items_per_page_count = items_per_page
     paginator = Paginator(get_products(name), items_per_page_count)
     if page_num > paginator.num_pages or page_num < 1:
         raise IndexError("page number is above of existing count")

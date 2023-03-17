@@ -13,7 +13,7 @@ def get_random():
     return random_deal
 
 
-def deal_to_json(deal):
+def deal_to_json(deal: Deal):
     return {
         deal.title: f"/product/{deal.product.id}"
     }
