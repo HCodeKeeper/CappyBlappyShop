@@ -3,13 +3,19 @@ from decimal import Decimal
 
 
 def get_random_json():
+    try:
+        deal = get_random()
+    except Deal.DoesNotExist:
+        raise
     return deal_to_json(
-        get_random()
+        deal
     )
 
 
-def get_random():
+def get_random() -> Deal:
     random_deal = Deal.objects.order_by('?').first()
+    if random_deal is None:
+        raise Deal.DoesNotExist()
     return random_deal
 
 

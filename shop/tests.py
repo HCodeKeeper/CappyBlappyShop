@@ -72,6 +72,10 @@ class ConnectionCase(TestCase):
         response = self.client.get(reverse('product', kwargs={'product_id': self.product.id}))
         self.assertTemplateUsed(response, 'product.html')
 
+    def test_product_page(self):
+        response = self.client.get(reverse('product', kwargs={'product_id': self.product.id}))
+        self.assertEqual(response.status_code, 200)
+
 
 class ProductCase(ProductContextRecorderMixin, TransactionTestCase):
     def test_integration_product_context(self):
@@ -155,3 +159,17 @@ class DealsCase(ProductContextRecorderMixin, TestCase):
         deal_json_expected = {self.deal.title: f'/product/{self.deal.product.id}'}
         deal_json = deal_service.deal_to_json(self.deal)
         self.assertEqual(deal_json, deal_json_expected)
+
+    def test_random_deal_api_no_ajax(self):
+        response = self.client.get(reverse('api_random_deal'))
+        self.assertEqual(response.status_code, 400)
+
+    def test_random_deal_api(self):
+        headers = {'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'}
+        response = self.client.get(reverse('api_random_deal'), **headers)
+        self.assertEqual(response.status_code, 200)
+
+    def test_random_non_existent_deal_api(self):
+        Deal.objects.filter().delete()
+        response = self.client.get(reverse('api_random_deal'))
+        self.assertEqual(response.status_code, 400)

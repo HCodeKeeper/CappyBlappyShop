@@ -5,17 +5,24 @@ from services.deal_service import get_random_json
 from services import reviews
 
 
+# abandoned
+@process_ajax
 def categories(request):
-    return process_ajax(request, get_categories("/search/"))
+    get_categories("/search/")
 
 
+@process_ajax
 def random_deal(request):
-    return process_ajax(request, get_random_json())
+    return get_random_json()
 
 
+# abandoned
+@process_ajax
 def get_reviews(request, product_id, page):
-    return process_ajax(request, reviews.get_reviews(product_id, page))
+    return reviews.get_reviews(product_id, page)
 
 
+# abandoned
+@process_ajax
 def add_review(request, product_id):
     return process_ajax(request, None)
