@@ -34,7 +34,6 @@ class Cart:
         for product_id in self.session_cart.values():
             product_items_price = 0
             product = Product.objects.get(id=product_id["self"])
-            addon = None
             if product_id["addon_id"] != DOESNT_EXIST_ID:
                 addon = Addon.objects.get(id=product_id["addon_id"])
                 product_items_price += decimal.Decimal(addon.price)
