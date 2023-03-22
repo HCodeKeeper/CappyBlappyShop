@@ -12,7 +12,7 @@ class Cart:
             self.__insert_cart_in_session()
         self.session_cart: dict = self.request.session["cart"]
 
-    def add(self, product_id, count: int, addon_id=DOESNT_EXIST_ID):
+    def add(self, product_id, count: int, addon_id: int = DOESNT_EXIST_ID):
         self.session_cart[product_id] = {"self": product_id, "count": count, "addon_id": addon_id}
         self.request.session.modified = True
 

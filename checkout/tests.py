@@ -2,13 +2,14 @@ from django.test import TestCase
 from django.urls import reverse
 from shop.tests import ProductContextRecorderMixin
 from django.test import RequestFactory, Client
+from .api import create_checkout_session
 from .views import succeed
 from services.cart_service import Cart
 from django.contrib.sessions.middleware import SessionMiddleware
 from typing import Callable
 
 
-def _insert_session(request, requested_view: Callable):
+def insert_session(request, requested_view: Callable):
     session_middleware = SessionMiddleware(requested_view)
     session_middleware.process_request(request)
 
@@ -41,7 +42,7 @@ class Results(ProductContextRecorderMixin, TestCase):
 
     def test_success(self):
         request = self.request_factory.get(reverse('checkout_succeed'))
-        _insert_session(request, succeed)
+        insert_session(request, succeed)
 
         cart = Cart(request)
         cart.add(self.product.id, 1, self.addon.id)
@@ -62,5 +63,26 @@ class Results(ProductContextRecorderMixin, TestCase):
         self.assertTemplateUsed(response, 'checkout_cancellation.html')
 
 
-class Checkout(TestCase):
-    pass
+class Checkout(ProductContextRecorderMixin, TestCase):
+    def setUp(self) -> None:
+        super(Checkout, self).setUp()
+        self.client = Client()
+        self.request_factory = RequestFactory()
+
+    def test_success(self):
+        request = self.request_factory.post('create_checkout_session')
+        insert_session(request, create_checkout_session)
+
+        cart = Cart(request)
+        cart.add(self.product.id, 2)
+
+        response = create_checkout_session(request)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('stripe', response.url)
+
+    def test_empty_cart(self):
+        request = self.request_factory.post('create_checkout_session')
+        insert_session(request, create_checkout_session)
+
+        response = create_checkout_session(request)
+        self.assertEqual(response.url, reverse('cart'))

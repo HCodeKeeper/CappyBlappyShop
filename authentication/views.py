@@ -5,7 +5,6 @@ from services.account import *
 from services.account import update_password as update_account_password
 from helpers.account import TokenGenerator
 from django.db.utils import DatabaseError
-from services import mailing
 from smtplib import SMTPException
 from django.db import transaction
 from django.contrib.auth import logout as logout_user

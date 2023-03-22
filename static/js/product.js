@@ -167,12 +167,11 @@ function add_to_cart(product_id){
   xhttp.setRequestHeader("X-CSRFToken", getCSRF());
   xhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
   if (!isNaN(parseInt(count)) && parseInt(count) >= 1){
-      xhttp.send(JSON.stringify(
-          {payload:{
+      xhttp.send(JSON.stringify({
           "product_id" : product_id,
           "count" : count,
           "addon_id" : addon_id
-      }}
+      }
   ));
   }
 }

@@ -1,10 +1,11 @@
 from django.urls import reverse
 from django.shortcuts import redirect
 import stripe
+from stripe.error import StripeError
 from services.cart_service import Cart
 from cappy_blappy_shop.settings import DOMAIN
 from helpers.checkout import generate_product_line
-from django.http import HttpResponseNotAllowed, HttpResponseServerError, HttpResponseBadRequest
+from django.http import HttpResponseNotAllowed, HttpResponseServerError
 
 
 def create_checkout_session(request):
@@ -20,7 +21,7 @@ def create_checkout_session(request):
                 success_url=DOMAIN + reverse('checkout_succeed'),
                 cancel_url=DOMAIN + reverse('checkout_cancelled'),
             )
-        except Exception as e:
+        except StripeError as e:
             raise e
             return HttpResponseServerError()
 
