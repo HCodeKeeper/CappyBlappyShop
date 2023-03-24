@@ -1,18 +1,14 @@
 from smtplib import SMTPException
 from django.contrib.auth.models import User
-from django.core.mail import send_mail
 from django.db.utils import DatabaseError
 from django.contrib.auth import login as login_user
 from django.contrib.auth import authenticate
-from . import mailing
-from .mailing import get_registration_token_html
 from .session import RegistrationData, TemporalRegistrationStorage
 from user_profiles.models import Profile, Telephone
 from custom_exceptions.account import ProfileAlreadyExistException
 from django.core.exceptions import ObjectDoesNotExist
 from helpers.responsibilit_chain import AbstractHandler
 from authentication import tasks
-from cappy_blappy_shop.settings import EMAIL_HOST_USER
 
 
 def login(request, username, password):
