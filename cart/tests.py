@@ -5,7 +5,7 @@ from services.cart_service import Cart
 from django.test import RequestFactory
 from django.urls import reverse
 from .views import cart as cart_view
-from checkout.tests import insert_session
+from service_tests import insert_session
 
 
 # AJAX API is hardly testable

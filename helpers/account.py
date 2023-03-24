@@ -13,4 +13,4 @@ class TokenGenerator:
 
     @classmethod
     def validate_token_pattern(cls, token):
-        return TokenGenerator.TOKEN_PATTERN.match(token)
+        return __class__.TOKEN_PATTERN.match(token)

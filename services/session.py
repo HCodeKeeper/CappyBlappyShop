@@ -1,4 +1,4 @@
-from custom_exceptions.session import EmptyTemporalRegistrationStorage
+from custom_exceptions.session import EmptyTemporalRegistrationStorage, InvalidTokenFormatException
 from helpers.account import TokenGenerator
 
 
@@ -7,7 +7,7 @@ class AbstractStorage:
 
     def __init__(self, request):
         self.request = request
-        self.key = AbstractStorage.KEY
+        self.key = __class__.KEY
         self.assert_keyword_exist()
 
     def clean(self):
@@ -27,6 +27,8 @@ class TemporalRegistrationStorage(AbstractStorage):
         super().__init__(request)
 
     def put(self, email, username, password, token):
+        if not TokenGenerator.validate_token_pattern(token):
+            raise InvalidTokenFormatException(token=token)
         self.request.session[self.key] = {
             "email": email,
             "username": username,
@@ -81,7 +83,6 @@ class TemporalPasswordUpdateTokenStorage(AbstractStorage):
 
     def __init__(self, request):
         super().__init__(request)
-        self.key = TemporalPasswordUpdateTokenStorage.KEY
 
     def put(self, token: str):
         self.request.session[self.key] = token

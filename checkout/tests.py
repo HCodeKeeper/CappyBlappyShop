@@ -1,17 +1,11 @@
 from django.test import TestCase
 from django.urls import reverse
+from service_tests import insert_session
 from shop.tests import ProductContextRecorderMixin
 from django.test import RequestFactory, Client
 from .api import create_checkout_session
 from .views import succeed
 from services.cart_service import Cart
-from django.contrib.sessions.middleware import SessionMiddleware
-from typing import Callable
-
-
-def insert_session(request, requested_view: Callable):
-    session_middleware = SessionMiddleware(requested_view)
-    session_middleware.process_request(request)
 
 
 class Results(ProductContextRecorderMixin, TestCase):
