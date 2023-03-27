@@ -77,6 +77,7 @@ class ConnectionCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
+# Also has integration and unit tests for product service
 class ProductCase(ProductContextRecorderMixin, TransactionTestCase):
     def test_integration_product_context(self):
         product_id = self.product.id
@@ -150,6 +151,7 @@ class ProductCase(ProductContextRecorderMixin, TransactionTestCase):
         self.assertIsNot(product.discounted_price, 0)
 
 
+# Also has integration and unit tests for deal service
 class DealsCase(ProductContextRecorderMixin, TestCase):
     def test_get_random_deal(self):
         deal = deal_service.get_random()

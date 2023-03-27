@@ -1,7 +1,6 @@
 import decimal
-
 from django.http import HttpRequest
-from shop.models import Product, Addon, Deal, DOESNT_EXIST_ID
+from shop.models import Product, Addon, DOESNT_EXIST_ID
 from services.deal_service import get_discounted_price
 
 

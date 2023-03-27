@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 import json
 
 
+# Abandoned
 def get_reviews(product_id, page):
     per_request_items = 8
     try:

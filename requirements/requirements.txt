@@ -40,6 +40,7 @@ cffi==1.15.1
     # via
     #   -r requirements/requirements.in
     #   argon2-cffi-bindings
+    #   cryptography
 charset-normalizer==2.1.1
     # via
     #   -r requirements/requirements.in
@@ -64,7 +65,9 @@ click-repl==0.2.0
     # via
     #   -r requirements/requirements.in
     #   celery
-coverage==7.2.1
+coverage==7.2.2
+    # via -r requirements/requirements.in
+cryptography==40.0.1
     # via -r requirements/requirements.in
 deprecated==1.2.13
     # via
@@ -157,7 +160,7 @@ wcwidth==0.2.6
     # via
     #   -r requirements/requirements.in
     #   prompt-toolkit
-wheel==0.38.4
+wheel==0.40.0
     # via pip-tools
 wrapt==1.14.1
     # via

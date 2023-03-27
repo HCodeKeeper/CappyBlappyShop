@@ -6,8 +6,6 @@ from helpers.account import TokenGenerator
 from services.session import (
     TemporalPasswordUpdateTokenStorage,
     TemporalRegistrationStorage,
-    TemporalRegistrationData,
-    RegistrationData,
 )
 
 
@@ -59,3 +57,19 @@ class RegistrationStorage(TestCase):
         self._insert_data(username, password, email, token)
         self.storage.clean()
         self.assertRaises(EmptyTemporalRegistrationStorage, self.storage.get)
+
+
+class TokenStorageShouldStore(TestCase):
+    def setUp(self) -> None:
+        self.mock_request = RequestFactory().get('/mock_path/')
+        insert_session(self.mock_request, lambda mock_request: None)
+
+        self.storage = TemporalPasswordUpdateTokenStorage(self.mock_request)
+        self.token = TokenGenerator.get_token()
+
+    def _put(self):
+        self.storage.put(self.token)
+
+    def test_get(self):
+        self._put()
+        self.assertEqual(self.storage.get(), self.token)

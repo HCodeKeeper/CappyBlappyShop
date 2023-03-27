@@ -57,6 +57,7 @@ def update_password(email, password):
         raise DatabaseError("User with this email doesn't exist")
     else:
         user.set_password(password)
+        user.save()
 
 
 def get_profile_from_request(request):
