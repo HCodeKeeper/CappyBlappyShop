@@ -15,13 +15,8 @@ import os
 # needed on M1.
 import pymysql
 import stripe
-import dotenv
 
-# .env
-path_to_env = PurePath('cappy_blappy_shop/.env')
-config = dotenv.dotenv_values(path_to_env)
-
-DOMAIN = config["DOMAIN"]
+DOMAIN = os.environ.get("DOMAIN")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,12 +26,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config["DJANGO_SECRET_KEY"]
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    'cappy_blappy_shop',
+]
 
 
 # Application definition
@@ -64,25 +62,48 @@ MIDDLEWARE = [
 ]
 
 # Mailing
-EMAIL_HOST = config["EMAIL_HOST"]
-EMAIL_PORT = config["EMAIL_PORT"]
-EMAIL_HOST_USER = config["EMAIL_HOST_USER"]
-EMAIL_HOST_PASSWORD = config["EMAIL_HOST_PASSWORD"]
+EMAIL_HOST = os.environ.get("EMAIL_HOST")
+EMAIL_PORT = os.environ.get("EMAIL_PORT")
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
 
 # Celery Configuration Options
-CELERY_TIMEZONE = config.get("TIME_ZONE")
+CELERY_TIMEZONE = os.environ.get("TIME_ZONE")
 # Need to be set to False not to be logged in prod
-CELERY_BROKER_URL = config.get("CELERY_BROKER")
-CELERY_RESULT_BACKEND = config.get("CONFIG_BACKEND")
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER")
+CELERY_RESULT_BACKEND = os.environ.get("CONFIG_BACKEND")
 CELERY_TASK_TRACK_STARTED = True
-#CELERY_IGNORE_RESULT = False
-#CELERY_TASK_IGNORE_RESULT = False
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
 ROOT_URLCONF = 'cappy_blappy_shop.urls'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'default': {
+            'format': '[DJANGO] %(levelname)s %(asctime)s %(module)s '
+                      '%(name)s.%(funcName)s:%(lineno)s: %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'default',
+        }
+    },
+    'loggers': {
+        '*': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        }
+    },
+}
 
 TEMPLATES = [
     {
@@ -110,10 +131,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'cbshop',
-        'USER': config["DB_USER"],
-        'PASSWORD': config["DB_PASSWORD"],
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'USER': os.environ.get("DB_USER"),
+        'PASSWORD': os.environ.get("DB_PASSWORD"),
+        'HOST': os.environ.get("DB_HOST"),
+        'PORT': os.environ.get("DB_PORT"),
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
         }
@@ -123,7 +144,7 @@ DATABASES = {
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": os.environ.get("CACHE_URL"),
     }
 }
 
@@ -133,7 +154,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 
 # Stripe integration
-stripe.api_key = config["STRIPE_API_SECRET_KEY"]
+stripe.api_key = os.environ.get("STRIPE_API_SECRET_KEY")
 
 # Fake PyMySQL's version and install as MySQLdb
 # https://adamj.eu/tech/2020/02/04/how-to-use-pymysql-with-django/
@@ -181,7 +202,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    os.path.join(BASE_DIR, "static"),
 ]
 
 # contend delivery network

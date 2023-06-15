@@ -1,7 +1,8 @@
 **/.env
-.DS_Store
+**/*.DS_Store
 *.pyo
 *.pyc
 venv
 env
 .idea/
+staticfiles-cdn/**
