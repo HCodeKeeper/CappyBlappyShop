@@ -12,6 +12,8 @@ RUN apk update && \
     apk add mariadb-dev && \
     pip install pip-tools
 COPY . .
-RUN pip-sync ./requirements/requirements.txt
+RUN pip-sync requirements/requirements.txt
 RUN chmod +x entrypoint.sh
+RUN chmod -R 755 static
+RUN chmod -R 755 staticfiles-cdn
 ENTRYPOINT ["sh", "entrypoint.sh"]

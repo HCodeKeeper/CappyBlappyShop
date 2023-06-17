@@ -50,6 +50,8 @@ services:
     working_dir: /cbshop
     volumes:
       - workers_data:/cbshop
+    env_file:
+      - .env
     command: celery -A cappy_blappy_shop worker -l INFO
     depends_on:
       - cache
