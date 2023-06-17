@@ -16,4 +16,5 @@ RUN pip-sync requirements/requirements.txt
 RUN chmod +x entrypoint.sh
 RUN chmod -R 755 static
 RUN chmod -R 755 staticfiles-cdn
+RUN python manage.py collectstatic --noinput
 ENTRYPOINT ["sh", "entrypoint.sh"]

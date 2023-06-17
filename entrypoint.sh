@@ -10,8 +10,6 @@ echo "MYSQL started"
 
 # Run migrations
 python manage.py migrate
-# Collect static files
-python manage.py collectstatic --noinput
 
-python manage.py runserver 0.0.0.0:${SERVER_PORT}
+gunicorn -b 0.0.0.0:${SERVER_PORT} cappy_blappy_shop.wsgi
 exec "$@"
