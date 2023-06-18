@@ -34,6 +34,11 @@ DEBUG = False
 ALLOWED_HOSTS = [
     'localhost',
     'cappy_blappy_shop',
+    'www.localhost'
+]
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'http://www.localhost:8000'
 ]
 
 
@@ -210,3 +215,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles-cdn"
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
