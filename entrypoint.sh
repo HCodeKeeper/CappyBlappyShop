@@ -11,5 +11,4 @@ echo "MYSQL started"
 # Run migrations
 python manage.py migrate
 
-gunicorn -b 0.0.0.0:${SERVER_PORT} cappy_blappy_shop.wsgi
 exec "$@"

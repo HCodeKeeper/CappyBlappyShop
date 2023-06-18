@@ -3,11 +3,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - 8000:${SERVER_PORT}
+    expose:
+      - ${SERVER_PORT}
     container_name: cbshop
     volumes:
       - server_data:/cbshop
+      - static_volume:/cbshop/staticfiles-cdn
+    command: gunicorn -b 0.0.0.0:${SERVER_PORT} cappy_blappy_shop.wsgi
     env_file:
       - .env
     environment:
@@ -56,8 +58,21 @@ services:
     depends_on:
       - cache
       - cappy_blappy_shop
+  
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    container_name: 'nginx'
+    volumes:
+      - static_volume:/home/app/web/staticfiles
+    ports:
+      - 8000:80
+    depends_on:
+      - cappy_blappy_shop
 
 volumes:
   cbshop_data:
   server_data:
   workers_data:
+  static_volume:
