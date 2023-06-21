@@ -35,6 +35,8 @@ services:
       MYSQL_PORT: ${DB_PORT}
     ports:
       - 3310:${DB_PORT}
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci 
+             --default-authentication-plugin=mysql_native_password
   
   cache:
     image: redis:7.0.11-alpine

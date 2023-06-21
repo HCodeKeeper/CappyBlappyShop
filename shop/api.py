@@ -6,6 +6,9 @@ from services import reviews
 
 
 # abandoned
+from shop.models import Deal
+
+
 @process_ajax
 def categories(request):
     get_categories("/search/")
@@ -13,7 +16,10 @@ def categories(request):
 
 @process_ajax
 def random_deal(request):
-    return get_random_json()
+    try:
+        return get_random_json()
+    except Deal.DoesNotExist:
+        return None
 
 
 # abandoned

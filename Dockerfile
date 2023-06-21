@@ -10,6 +10,7 @@ RUN apk update && \
     apk add musl-dev && \
     apk add --no-cache bash && \
     apk add mariadb-dev && \
+    apk add mysql-client && \
     pip install pip-tools
 COPY . .
 RUN pip-sync requirements/requirements.txt
