@@ -73,6 +73,19 @@ services:
     depends_on:
       - cappy_blappy_shop
 
+  stripe_purchase:
+    image: stripe/stripe-cli:latest
+    container_name: 'stripe_purchase_listener'
+    volumes:
+      - ~/.config/stripe:/root/.config/stripe
+    command: listen --api-key ${STRIPE_API_SECRET_KEY} --events checkout.session.completed --forward-to http://localhost:${SERVER_PORT}/event/checkout_succeeded
+    env_file:
+      - .env
+    expose:
+      - 4010
+    depends_on:
+      - cappy_blappy_shop
+
 volumes:
   cbshop_data:
   server_data:
