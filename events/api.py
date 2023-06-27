@@ -5,9 +5,10 @@ from django.db import transaction
 from django.db.utils import DatabaseError
 import stripe
 from django.http import HttpResponse
+import logging
 
 endpoint_secret = "whsec_a1f6b7a036ad4eaec4bdad6c2e628b9d45a3038c6a948c1501d353fa06fa8b45"
-
+logger = logging.getLogger()
 
 @csrf_exempt
 @transaction.atomic
@@ -19,11 +20,13 @@ def checkout_webhook(request):
         event = stripe.Webhook.construct_event(
             payload, sig_header, endpoint_secret
         )
-    except ValueError as e:
+    except ValueError:
         # Invalid payload
+        logger.error(f"Webhook: Invalid payload.", exc_info=True)
         return HttpResponse(status=400)
-    except stripe.error.SignatureVerificationError as e:
+    except stripe.error.SignatureVerificationError:
         # Invalid signature
+        logger.error(f"Webhook: Invalid signature.", exc_info=True)
         return HttpResponse(status=400)
 
     if event["type"] == 'checkout.session.completed':

@@ -34,12 +34,15 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'localhost',
     'cappy_blappy_shop',
+    'cappyblappyshop',
     'www.localhost'
 ]
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
     'http://www.localhost:8000'
 ]
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Application definition
@@ -99,7 +102,13 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'default',
-        }
+        },
+        'error': {
+            'class': 'logging.FileHandler',
+            'filename': 'error.log',
+            'level': 'ERROR',
+            'formatter': 'default',
+        },
     },
     'loggers': {
         '*': {
