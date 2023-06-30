@@ -1,7 +1,17 @@
 # CappyBlappyShop
+### Table of contents:
+- [Overview](#overview)
+- [Looks](#looks)
+- [What was implemented](#what-was-implemented)
+- [What a user can do](#what-a-user-can-do)
+- [.env file structure](#env-file-structure)
+- [Running the project (Docker)](#running-the-project-with-docker-preferred-way)
+- [Running the project (manually)](#running-the-project-manually)
+- [Serving test data](#)
+- [Test coverage stats](#test-coverage)
 ## Overview
 ! This repository represents only *webapp* part of the site! The *RESTful api* implementation is stored in RESTfulCappyBlappyShop (https://github.com/HCodeKeeper/RESTfulCappyBlappyShop) ! (it's separated as branching is a little messed up)\
-This is a shop that sells capybaras. *Webapp* part is written in python and vanilla js, using django, redis, celery, mysql, stripe integration.
+This is a shop that sells capybaras. *Webapp* part is written in python and vanilla js, using django, redis, celery, mysql, stripe integration, nginx.
 
 ## Looks:
 Catalogue
@@ -38,26 +48,30 @@ On this site you can:
 
 
 ## .env file structure:
-```
+```dotenv
 SERVER_PORT=8000
-DOMAIN=http://www.localhost:${SERVER_PORT}
+DOMAIN=domain:${SERVER_PORT}
 STRIPE_API_SECRET_KEY=
 DB_USER=
 DB_PASSWORD=
-DJANGO_SECRET_KEY=
+DB_HOST=
+DB_PORT=
+DJANGO_SECRET_KEY=django-insecure_custom=key
 
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
 EMAIL_HOST_USER=
 EMAIL_HOST_PASSWORD=
 
-TIME_ZONE=
+TIME_ZONE=python_datetime_tz
 
+#CACHE
+CACHE_URL=redis://cache:num/num
 #CELERY
-CONFIG_BACKEND=redis://127.0.0.1:6379/3
-CELERY_BROKER=redis://127.0.0.1:6379/2
+CONFIG_BACKEND=redis://cache:num/num
+CELERY_BROKER=redis://cache:num/num
 ```
-## Running the project
+## Running the project manually
 run redis server
 ```
 redis-server
@@ -67,6 +81,27 @@ run stripe listener
 stripe listen --events checkout.session.completed --forward-to localhost:8000/event/checkout_succeeded/
 ```
 run django server
+
+## Running the project with Docker (preferred way)
+####Prerequisites:
+it is assumed you have docker or docker engine already installed on your host machine and this repository downloaded.
+####Running:
+Navigate towards the downloaded copy of this repository and run the code below. Or alternatively execute the same process in Docker GUI
+```shell
+docker compose up
+```
+This will run web server, reverse-proxy nginx server, redis, celery, database server and a stripe listener for writing orders to the database.
+
+## Serving test data
+If you want to make test records to application's database, you can load dev-demo.sql file in sql_dump_demo folder present in the repository to django dbshell.
+Here is how you can do it with docker:
+```shell
+docker exec ${python web server container id} sh -c "cat sql_dump_demo/dev-demo.sql | python manage.py dbshell"
+```
+If you run the server locally, you can simply navigate to the application's folder containing manage.py and run this:
+```shell
+cat sql_dump_demo/dev-demo.sql | python manage.py dbshell
+```
 
 ## Test coverage
 ```
