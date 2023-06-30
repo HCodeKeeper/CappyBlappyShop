@@ -10,8 +10,6 @@ services:
       - server_data:/cbshop
       - static_volume:/cbshop/staticfiles-cdn
     command: gunicorn -b 0.0.0.0:${SERVER_PORT} cappy_blappy_shop.wsgi
-    env_file:
-      - .env
     environment:
       MYSQL_HOST: ${DB_HOST}
       MYSQL_PORT: ${DB_PORT}
@@ -27,8 +25,6 @@ services:
     container_name: mysql
     volumes:
       - cbshop_data:/var/lib/mysql
-    env_file:
-      - .env
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: cbshop
@@ -54,8 +50,6 @@ services:
     working_dir: /cbshop
     volumes:
       - workers_data:/cbshop
-    env_file:
-      - .env
     command: celery -A cappy_blappy_shop worker -l INFO
     depends_on:
       - cache
@@ -79,8 +73,6 @@ services:
     volumes:
       - ~/.config/stripe:/root/.config/stripe
     command: listen --api-key ${STRIPE_API_SECRET_KEY} --events checkout.session.completed --forward-to cappyblappyshop:${SERVER_PORT}/event/checkout_succeeded/
-    env_file:
-      - .env
     expose:
       - 4010
     depends_on:
