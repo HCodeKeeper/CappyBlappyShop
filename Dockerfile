@@ -8,6 +8,7 @@ RUN apk update && \
     apk add gcc && \
     apk add libffi-dev && \
     apk add musl-dev && \
+    apk add --no-cache coreutils && \
     apk add --no-cache bash && \
     apk add mariadb-dev && \
     apk add mysql-client && \
