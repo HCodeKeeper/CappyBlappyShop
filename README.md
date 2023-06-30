@@ -7,7 +7,7 @@
 - [.env file structure](#env-file-structure)
 - [Running the project (Docker)](#running-the-project-with-docker-preferred-way)
 - [Running the project (manually)](#running-the-project-manually)
-- [Serving test data](#)
+- [Serving test data](#serving-test-data)
 - [Test coverage stats](#test-coverage)
 ## Overview
 ! This repository represents only *webapp* part of the site! The *RESTful api* implementation is stored in RESTfulCappyBlappyShop (https://github.com/HCodeKeeper/RESTfulCappyBlappyShop) ! (it's separated as branching is a little messed up)\
