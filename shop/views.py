@@ -2,7 +2,8 @@ from .models import Product
 from django.shortcuts import render
 from services import product_service, cart_service, deal_service
 from shop.api import *
-
+from cappy_blappy_shop.settings import STATICFILES_DIRS
+import logging
 
 def index(request):
     products = product_service.Catalogue.get_some_random_products()

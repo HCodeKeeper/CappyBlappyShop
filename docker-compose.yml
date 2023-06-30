@@ -1,0 +1,93 @@
+services:
+  cappyblappyshop:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    expose:
+      - ${SERVER_PORT}
+    container_name: cbshop
+    volumes:
+      - server_data:/cbshop
+      - static_volume:/cbshop/staticfiles-cdn
+    command: gunicorn -b 0.0.0.0:${SERVER_PORT} cappy_blappy_shop.wsgi
+    env_file:
+      - .env
+    environment:
+      MYSQL_HOST: ${DB_HOST}
+      MYSQL_PORT: ${DB_PORT}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DB: cbshop
+    depends_on:
+      - db
+      - cache
+
+  db: 
+    image: mysql:latest
+    container_name: mysql
+    volumes:
+      - cbshop_data:/var/lib/mysql
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: cbshop
+      MYSQL_PORT: ${DB_PORT}
+    ports:
+      - 3310:${DB_PORT}
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci 
+             --default-authentication-plugin=mysql_native_password
+  
+  cache:
+    image: redis:7.0.11-alpine
+    container_name: cache
+    restart: unless-stopped
+    ports:
+      - 6379:6379
+    command: redis-server --loglevel warning
+  
+  workers:
+    build:
+      context: .
+      dockerfile: CeleryDockerfile
+    container_name: 'celery'
+    working_dir: /cbshop
+    volumes:
+      - workers_data:/cbshop
+    env_file:
+      - .env
+    command: celery -A cappy_blappy_shop worker -l INFO
+    depends_on:
+      - cache
+      - cappyblappyshop
+  
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    container_name: 'nginx'
+    volumes:
+      - static_volume:/home/app/web/staticfiles
+    ports:
+      - 8000:80
+    depends_on:
+      - cappyblappyshop
+
+  stripe_purchase:
+    image: stripe/stripe-cli:latest
+    container_name: 'stripe_purchase_listener'
+    volumes:
+      - ~/.config/stripe:/root/.config/stripe
+    command: listen --api-key ${STRIPE_API_SECRET_KEY} --events checkout.session.completed --forward-to cappyblappyshop:${SERVER_PORT}/event/checkout_succeeded/
+    env_file:
+      - .env
+    expose:
+      - 4010
+    depends_on:
+      - cappyblappyshop
+
+volumes:
+  cbshop_data:
+  server_data:
+  workers_data:
+  static_volume:

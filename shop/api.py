@@ -1,11 +1,10 @@
-from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from helpers.ajax import process_ajax
 from services.category_service import get_categories
 from services.deal_service import get_random_json
 from services import reviews
+from shop.models import Deal
 
 
-# abandoned
 @process_ajax
 def categories(request):
     get_categories("/search/")
@@ -13,7 +12,10 @@ def categories(request):
 
 @process_ajax
 def random_deal(request):
-    return get_random_json()
+    try:
+        return get_random_json()
+    except Deal.DoesNotExist:
+        return {"payload": None}
 
 
 # abandoned
