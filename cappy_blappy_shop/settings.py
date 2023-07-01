@@ -32,11 +32,20 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    '*',
+    'localhost',
+    'cappy_blappy_shop',
+    'cappyblappyshop',
+    'www.localhost',
+    'http://3.94.109.56',
+    'http://ec2-3-94-109-56.compute-1.amazonaws.com',
 ]
 CSRF_TRUSTED_ORIGINS = [
-    '*'
+    'http://localhost:8000',
+    'http://www.localhost:8000',
+    'http://3.94.109.56:8000',
+    'http://ec2-3-94-109-56.compute-1.amazonaws.com:8000',
 ]
+
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
