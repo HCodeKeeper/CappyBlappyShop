@@ -29,17 +29,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
-    'localhost',
-    'cappy_blappy_shop',
-    'cappyblappyshop',
-    'www.localhost'
+    '*',
 ]
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:8000',
-    'http://www.localhost:8000'
+    '*'
 ]
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
