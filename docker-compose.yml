@@ -78,7 +78,7 @@ services:
     container_name: 'stripe_purchase_listener'
     volumes:
       - ~/.config/stripe:/root/.config/stripe
-    command: listen --api-key ${STRIPE_API_SECRET_KEY} --events checkout.session.completed --forward-to cappyblappyshop:${SERVER_PORT}/event/checkout_succeeded/
+    command: listen --api-key ${STRIPE_API_SECRET_KEY} --events checkout.session.completed --forward-to ${DOMAIN}/event/checkout_succeeded/
     env_file:
       - .env
     expose:
