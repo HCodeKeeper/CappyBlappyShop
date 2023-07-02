@@ -32,15 +32,10 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    '*', # Needs to be server's ip in prod
     '54.172.121.28'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'http://*',
-    'https://*',
-    f'http://*:{os.environ.get("SERVER_PORT")}',
-    f'https://*:{os.environ.get("SERVER_PORT")}',
     f'http://54.172.121.28:{os.environ.get("SERVER_PORT")}',
 ]
 
