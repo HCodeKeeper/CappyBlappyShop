@@ -32,14 +32,16 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    '44.203.53.214',
+    '*', # Needs to be server's ip in prod
 ]
+''' Without HTTPS
 CSRF_TRUSTED_ORIGINS = [
-    '44.203.53.214',
+
 ]
+'''
 
-
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# Without HTTPS
+##SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Application definition
@@ -222,6 +224,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles-cdn"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+# Without HTTPS
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
 
