@@ -27,16 +27,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
+SERVER_IP = os.environ.get("SERVER_IP")
+SERVER_PORT = os.environ.get("SERVER_PORT")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    '54.172.121.28'
+    SERVER_IP
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    f'http://54.172.121.28:{os.environ.get("SERVER_PORT")}',
+    f'http://{SERVER_IP}:{SERVER_PORT}',
 ]
 
 # Without HTTPS

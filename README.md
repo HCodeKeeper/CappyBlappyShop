@@ -50,6 +50,7 @@ On this site you can:
 ## .env file structure:
 ```dotenv
 SERVER_PORT=8000
+SERVER_IP=
 DOMAIN=domain:${SERVER_PORT}
 STRIPE_API_SECRET_KEY=
 DB_USER=
