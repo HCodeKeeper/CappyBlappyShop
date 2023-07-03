@@ -34,7 +34,7 @@ SERVER_PORT = os.environ.get("SERVER_PORT")
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    SERVER_IP
+    f'{SERVER_IP}'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
