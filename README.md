@@ -57,7 +57,7 @@ DB_USER=
 DB_PASSWORD=
 DB_HOST=
 DB_PORT=
-DJANGO_SECRET_KEY=django-insecure_custom=key
+DJANGO_SECRET_KEY=key
 
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
