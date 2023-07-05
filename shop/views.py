@@ -1,9 +1,11 @@
+from django.http import HttpResponseBadRequest
+
 from .models import Product
 from django.shortcuts import render
 from services import product_service, cart_service, deal_service
 from shop.api import *
-from cappy_blappy_shop.settings import STATICFILES_DIRS
-import logging
+from shop.filters import ProductFilter
+
 
 def index(request):
     products = product_service.Catalogue.get_some_random_products()
@@ -18,12 +20,14 @@ def catalogue(request):
     name = request.GET.get('product', '')
     page_num = int(request.GET.get('page', '1'))
     try:
-        products = product_service.get_products_page(name, page_num)
+        _filter = ProductFilter(request.GET)
+        products = product_service.get_products_page(name, page_num, _filter)
         product_service.insert_discount_in_products(products.object_list)
         context = {
             "products": products,
             "page_num": page_num,
-            "query": name
+            "query": name,
+            "filter": _filter
         }
         return render(request, "catalogue.html", context)
     except IndexError:
@@ -38,7 +42,7 @@ def product(request, product_id):
         context = {
             "product": _product,
             "addons": product_context.get_addons(),
-            "discounted_price": deal_service.get_discounted_price(_product)
+            "discounted_price": deal_service.get_discounted_price(_product),
         }
         return render(request, "product.html", context)
     except Product.DoesNotExist:

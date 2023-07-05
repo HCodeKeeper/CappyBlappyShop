@@ -34,7 +34,7 @@ SERVER_PORT = os.environ.get("SERVER_PORT")
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    f'{SERVER_IP}'
+    f'{SERVER_IP}',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'authentication',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

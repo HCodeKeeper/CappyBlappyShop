@@ -3,6 +3,7 @@ from typing import List
 from django.http import JsonResponse
 from django.core.paginator import Paginator
 from services import deal_service
+from django_filters import FilterSet
 
 
 def insert_discount_in_products(products: [Product]):
@@ -48,11 +49,14 @@ def get_random_products(quantity):
     return products
 
 
-def get_products_page(name, page_num, items_per_page: int = 8):
+def get_products_page(name, page_num, _filter: FilterSet,  items_per_page: int = 8):
     items_per_page_count = items_per_page
-    paginator = Paginator(get_products(name), items_per_page_count)
+    if _filter.queryset is None:
+        _filter.queryset = get_products(name)
+    filtered_products = _filter.qs
+    paginator = Paginator(filtered_products, items_per_page_count)
     if page_num > paginator.num_pages or page_num < 1:
-        raise IndexError("page number is above of existing count")
+        raise IndexError("Page number is above of existing count")
     return paginator.page(page_num)
 
 

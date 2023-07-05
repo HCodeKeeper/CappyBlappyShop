@@ -1,11 +1,10 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'styles/search.css' %}">
 <div class="search_segment">
-    <div class="dropdown">
-        <button name="menu" class="menu_btn">Categories</button>
-        <div class="dropdown-content" id="categories"></div>
-    </div>
     <form action="/find">
+        <p><b>Category:</b>{{ filter.form.category__name }}</p>
+        <p><b>Manufacturer:</b>{{ filter.form.manufacturer }}</p>
+        <p><b>Price below:</b>{{ filter.form.price__lt }}</p>
         <input type="search" name="product">
         <input type="hidden" name="page" value="1">
     </form>
