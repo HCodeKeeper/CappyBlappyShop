@@ -11,7 +11,7 @@
 - [Test coverage stats](#test-coverage)
 ## Overview
 ! This repository represents only *webapp* part of the site! The *RESTful api* implementation is stored in RESTfulCappyBlappyShop (https://github.com/HCodeKeeper/RESTfulCappyBlappyShop) ! (it's separated as branching is a little messed up)\
-This is a shop that sells capybaras. *Webapp* part is written in python and vanilla js, using django, redis, celery, mysql, stripe integration, nginx.
+This is a shop that sells capybaras. *Webapp* part is written in python and vanilla js, using django, redis, celery, mysql, stripe integration, nginx. Deployed with Docker and Docker-compose and hosted on AWS EC2
 
 ## Looks:
 Catalogue
